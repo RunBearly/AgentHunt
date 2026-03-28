@@ -22,3 +22,51 @@
   - MCP responses are SSE format, not plain JSON — need to parse `data:` lines from the event stream
   - Each POST /mcp creates a fresh server+transport, so batched JSON-RPC arrays and multi-step sessions don't work in a single request
 ---
+
+## 2026-03-28 - US-002
+- What was implemented: Trust signal distinction in web UI — verified vs self-reported invocation counts and trust label badge
+- Files changed:
+  - `web/app.js` — added verifiedInvocationCount, selfReportedInvocationCount, trustLabel to all fallback service data; added these three fields to the info grid in renderDetail(); added trust label badge to detail meta area
+  - `web/styles.css` — added CSS classes for trust-badge variants (verified-healthy, self-reported, watch, verified)
+- **Learnings for future iterations:**
+  - The fallback data in web/app.js must be kept in sync with backend seed data fields — when the backend adds new fields, the static fallback also needs them
+  - Trust label badge uses `trust-${trustLabel}` CSS class pattern for color-coding different trust levels
+---
+
+## 2026-03-28 - US-003
+- What was implemented: Updated README with production deployment instructions, curl examples for MCP and REST API, llms.txt reference, and removed the launch-time checklist
+- Files changed:
+  - `README.md` — replaced launch checklist with production URL section, usage examples (curl for MCP JSON-RPC, REST API, llms.txt), and consolidated endpoint documentation
+- **Learnings for future iterations:**
+  - Typecheck script is `npm run lint` (tsc --noEmit), not `npm run typecheck`
+  - MCP curl examples need both `Content-Type: application/json` and `Accept: application/json, text/event-stream` headers
+---
+
+## 2026-03-28 - US-004
+- What was implemented: Updated llms.txt with complete documentation of all 8 MCP tools including descriptions and input schemas
+- Files changed:
+  - `llms.txt` — rewrote with MCP endpoint path, all 8 tool definitions with input fields (required/optional), and REST API endpoints
+- **Learnings for future iterations:**
+  - All MCP tool definitions live in `src/mcp/server.ts` using `server.registerTool()` with Zod schemas
+  - Tool input schemas use zod/v4 — check `.optional()` and `.describe()` for field metadata
+---
+
+## 2026-03-28 - US-005
+- What was implemented: Added healthCheckPath and NODE_VERSION env var to render.yaml for successful Render deployment
+- Files changed:
+  - `render.yaml` — added `healthCheckPath: /api/health`, added `NODE_VERSION: "22"` env var
+- **Learnings for future iterations:**
+  - Render uses `NODE_VERSION` env var (not `engines.node` from package.json) to select the Node runtime version
+  - `healthCheckPath` in render.yaml should point to an existing health endpoint (GET /api/health)
+  - package.json `engines.node: ">=22"` was already correct and consistent with the Render config
+---
+
+## 2026-03-28 - US-006
+- What was implemented: Created the final "Launch AgentHunt" commit containing all launch artifacts (README, llms.txt, render.yaml, prd.json, progress.txt)
+- Files changed:
+  - `prd.json` — marked US-006 as passes: true
+  - `progress.txt` — appended US-006 progress entry
+- **Learnings for future iterations:**
+  - The launch commit is a ceremony commit — all real work was done in prior stories. It just bundles the final state.
+  - All 10 tests pass, typecheck passes, build succeeds before the launch commit.
+---
