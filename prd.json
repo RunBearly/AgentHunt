@@ -267,8 +267,8 @@
         "Typecheck passes"
       ],
       "priority": 17,
-      "passes": false,
-      "notes": "Curl each endpoint on https://agenthunt-web.onrender.com. This replaces US-013 as the definitive verification after real data is live."
+      "passes": true,
+      "notes": "Verified 2026-03-28: all 7 endpoints confirmed with real data. Deploy dep-d744905ipkoc738e1650 live."
     }
   ]
 }

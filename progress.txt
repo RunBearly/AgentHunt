@@ -254,3 +254,20 @@
   - Render autodeploy may not trigger on direct `git push origin main` if the branch was already tracked — use Render API POST /deploys to force a new deploy
   - Database services ("-like" entries) are real DB rows, distinct from code-level mock data (MeshRouter, fallbackServices array)
 ---
+
+## 2026-03-28 - US-017
+- What was implemented: Final production verification of all endpoints with real data
+- Verification results:
+  - GET /api/health → status ok, databaseConnected true ✓
+  - GET /api/services → 85 real services, 0 mock ✓
+  - GET /api/services/github-mcp-server → returns detail with category "Developer Tools" ✓
+  - GET /api/services/github-mcp-server/trust → trustLabel: self-reported, verified: 0, selfReported: 1 ✓
+  - POST /mcp → valid JSON-RPC initialize response ✓
+  - GET /llms.txt → 8 MCP tools listed ✓
+  - GET / → 200 OK, web UI served ✓
+- Files changed:
+  - `prd.json` — marked US-017 as passes: true
+  - `progress.txt` — appended US-017 progress entry
+- **Learnings for future iterations:**
+  - llms.txt uses `### ` (h3) for tool names, not `## ` (h2) — count the right heading level when verifying
+---
