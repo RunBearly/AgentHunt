@@ -97,6 +97,78 @@
       "priority": 6,
       "passes": true,
       "notes": "This is the final story. Only create this commit after all other stories pass."
+    },
+    {
+      "id": "US-007",
+      "title": "Push branch to GitHub remote",
+      "description": "As a developer, I need the ralph/agenthunt-mvp branch pushed to origin so Render can pick it up and CI runs.",
+      "acceptanceCriteria": [
+        "git push origin ralph/agenthunt-mvp succeeds",
+        "All 6 local commits are visible on the remote",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": true,
+      "notes": "Branch is currently 6 commits ahead of origin."
+    },
+    {
+      "id": "US-008",
+      "title": "Create PR and merge to main",
+      "description": "As a developer, I need a PR from ralph/agenthunt-mvp to main so the code lands on the deploy branch that render.yaml targets.",
+      "acceptanceCriteria": [
+        "PR created from ralph/agenthunt-mvp to main via gh pr create",
+        "PR is merged to main",
+        "render.yaml branch field is 'main' which matches the merged target",
+        "Typecheck passes"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": "render.yaml has branch: main, so code must be on main for Render autoDeploy."
+    },
+    {
+      "id": "US-009",
+      "title": "Set Render environment variables and trigger deploy",
+      "description": "As an operator, I need Render env vars (OPENAI_API_KEY, DATABASE_URL or SUPABASE_PROJECT_REF+SUPABASE_DB_PASSWORD, ADMIN_WRITE_TOKEN) configured and a deploy triggered.",
+      "acceptanceCriteria": [
+        "Render service exists for agenthunt",
+        "Env vars OPENAI_API_KEY, DATABASE_URL (or SUPABASE_PROJECT_REF + SUPABASE_DB_PASSWORD) are set on Render",
+        "Deploy is triggered (either via autoDeploy on merge or manual trigger)",
+        "GET /api/health on the production URL returns status ok",
+        "Typecheck passes"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": "Use Render API or dashboard. Render project ID: prj-d7423pjuibrs73cn9jag. Supabase project ref: bcneskpabcflgsgwielf."
+    },
+    {
+      "id": "US-010",
+      "title": "Verify production endpoints and update README with final URL",
+      "description": "As a developer, I need to confirm the production deployment works and update README if the actual Render URL differs from the placeholder.",
+      "acceptanceCriteria": [
+        "Production /api/health returns status ok with database connected",
+        "Production /api/services returns seeded services",
+        "Production /mcp responds to a JSON-RPC list_services call",
+        "Production /llms.txt is accessible",
+        "Production / serves the web UI",
+        "README.md production URL matches the actual deployed URL",
+        "Typecheck passes"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": "If Render assigns a different URL than agenthunt.onrender.com, update README and llms.txt accordingly."
+    },
+    {
+      "id": "US-011",
+      "title": "Prepare and post Discord launch announcement",
+      "description": "As a project maintainer, I need a Discord launch announcement drafted and posted to the designated channel.",
+      "acceptanceCriteria": [
+        "Discord announcement copy includes: product name, one-line description, production URL, MCP endpoint URL, and llms.txt URL",
+        "Announcement is posted to the designated Discord channel",
+        "Typecheck passes"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": "PRD lists Discord announcement as a launch artifact. May need browser session or webhook."
     }
   ]
 }

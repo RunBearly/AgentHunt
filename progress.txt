@@ -70,3 +70,11 @@
   - The launch commit is a ceremony commit — all real work was done in prior stories. It just bundles the final state.
   - All 10 tests pass, typecheck passes, build succeeds before the launch commit.
 ---
+
+## 2026-03-28 - US-007
+- What was implemented: Pushed ralph/agenthunt-mvp branch to GitHub remote origin
+- Files changed: None (git push only)
+- **Learnings for future iterations:**
+  - Branch had 7 commits ahead of origin (6 feature commits + 1 initial deployable commit)
+  - Push was straightforward — no force push needed since branch was only local-ahead
+---
