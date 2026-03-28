@@ -8,13 +8,13 @@ It ships two surfaces:
 
 ## Production URL
 
-> **Production host**: `https://agenthunt.onrender.com` _(update after first deploy)_
+> **Production host**: `https://agenthunt-web.onrender.com`
 
-- Web UI: `https://agenthunt.onrender.com/`
-- MCP endpoint: `https://agenthunt.onrender.com/mcp`
-- API: `https://agenthunt.onrender.com/api/services`
-- Health check: `https://agenthunt.onrender.com/api/health`
-- Agent discovery: `https://agenthunt.onrender.com/llms.txt`
+- Web UI: `https://agenthunt-web.onrender.com/`
+- MCP endpoint: `https://agenthunt-web.onrender.com/mcp`
+- API: `https://agenthunt-web.onrender.com/api/services`
+- Health check: `https://agenthunt-web.onrender.com/api/health`
+- Agent discovery: `https://agenthunt-web.onrender.com/llms.txt`
 
 ## Quick start
 
@@ -45,19 +45,19 @@ Important ones:
 ### List all services (REST API)
 
 ```bash
-curl https://agenthunt.onrender.com/api/services
+curl https://agenthunt-web.onrender.com/api/services
 ```
 
 ### Get a specific service
 
 ```bash
-curl https://agenthunt.onrender.com/api/services/1
+curl https://agenthunt-web.onrender.com/api/services/1
 ```
 
 ### Call the MCP endpoint (JSON-RPC)
 
 ```bash
-curl -X POST https://agenthunt.onrender.com/mcp \
+curl -X POST https://agenthunt-web.onrender.com/mcp \
   -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \
   -d '{
@@ -76,7 +76,7 @@ curl -X POST https://agenthunt.onrender.com/mcp \
 ### Agent discovery via llms.txt
 
 ```bash
-curl https://agenthunt.onrender.com/llms.txt
+curl https://agenthunt-web.onrender.com/llms.txt
 ```
 
 The `llms.txt` file lists all available MCP tools and their input schemas so agents can self-discover the service catalog.

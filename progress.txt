@@ -106,3 +106,19 @@
   - Render service URL is `https://agenthunt-web.onrender.com` (slug-based, not just `agenthunt.onrender.com`)
   - Use `postgres.{ref}` as the username for Supabase pooler connections (not just `postgres`)
 ---
+
+## 2026-03-28 - US-010
+- What was implemented: Verified all 5 production endpoints and updated README.md to use the correct production URL (agenthunt-web.onrender.com)
+- Production verification results:
+  - GET /api/health → `{"status":"ok","database":{"mode":"database","databaseConnected":true}}` ✓
+  - GET /api/services → returns seeded services array ✓
+  - POST /mcp (JSON-RPC list_services) → returns SSE with service data ✓
+  - GET /llms.txt → accessible, returns tool documentation ✓
+  - GET / → 200 OK, web UI served ✓
+- Files changed:
+  - `README.md` — replaced all `agenthunt.onrender.com` references with `agenthunt-web.onrender.com`, removed "(update after first deploy)" note
+  - `prd.json` — marked US-010 as passes: true
+  - `progress.txt` — appended US-010 progress entry
+- **Learnings for future iterations:**
+  - Render service slugs include the service type suffix (e.g., `-web`) — always verify the actual deployed URL rather than assuming the slug matches the service name
+---

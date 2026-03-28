@@ -154,7 +154,7 @@
         "Typecheck passes"
       ],
       "priority": 10,
-      "passes": false,
+      "passes": true,
       "notes": "IMPORTANT: Actual production URL is https://agenthunt-web.onrender.com (NOT agenthunt.onrender.com as in README). Must update all references in README.md and llms.txt to use agenthunt-web.onrender.com. After updating, commit and push to main. Then curl each endpoint to verify: /api/health, /api/services, /mcp (POST JSON-RPC), /llms.txt, /."
     },
     {
