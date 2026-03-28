@@ -381,3 +381,19 @@
   - Always use COALESCE when casting JSONB text fields to int in ORDER BY — null or non-numeric values will crash the query
   - searchServices() delegates to listServices() then filters in JS — fixing listServices fixes search too
 ---
+
+## 2026-03-28 - US-017
+- What was implemented: Final production smoke test — re-verified all endpoints and UI
+- Verification results:
+  - GET /api/health → status ok, databaseConnected true ✓
+  - GET /api/services → real services (GitHub MCP, etc.) ✓
+  - POST /mcp → valid JSON-RPC initialize response with protocolVersion 2025-03-26 ✓
+  - GET /llms.txt → 8 MCP tools listed ✓
+  - GET / → 200 OK, web UI served ✓
+  - Typecheck passes ✓
+- Files changed:
+  - `prd.json` — marked US-017 as passes: true
+  - `progress.txt` — appended US-017 progress entry
+- **Learnings for future iterations:**
+  - Production smoke test is a verification-only story — no code changes, just endpoint checks and typecheck
+---
