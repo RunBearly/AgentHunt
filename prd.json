@@ -285,17 +285,19 @@
       "title": "Post Discord launch announcement via agent-browser",
       "description": "As a project maintainer, I need a Discord launch announcement drafted and posted to the designated channel.",
       "acceptanceCriteria": [
-        "Use agent-browser CLI (AGENT_BROWSER_SESSION_NAME=agenthunt) to open Discord in browser",
+        "MUST use agent-browser CLI to open Discord — this has NOT been done yet, do NOT mark as complete without actually posting",
         "Login to Discord using credentials from 1Password (op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee)",
         "Complete MFA using OTP from 1Password (op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp)",
         "Navigate to the hackathon Discord server and find the live-and-updates channel",
         "Post a launch announcement that includes: AgentHunt name, one-line description, production URL (https://agenthunt-web.onrender.com), MCP endpoint (/mcp), and llms.txt URL (/llms.txt)",
         "Take a screenshot via agent-browser snapshot to confirm the message was posted",
-        "Typecheck passes"
+        "Attach the screenshot path in progress.txt as proof of posting",
+        "Typecheck passes",
+        "If Discord posting fails at ANY step, write a detailed failure report to progress.txt: which step failed, the exact error message, screenshot of the failure state, and what was attempted. Do NOT mark this story as passes=true if posting failed."
       ],
-      "priority": 23,
-      "passes": true,
-      "notes": "MUST use agent-browser CLI for Discord posting — do NOT skip this. Full procedure in .omx/plans/browser-session-runbook.md. Commands: (1) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal (2) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=password --reveal (3) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp (4) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open https://discord.com/channels/@me (5) Login with credentials, MFA with OTP (6) Navigate to live-and-updates channel (7) Type and send message (8) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser snapshot -c -d 8 to confirm."
+      "priority": 24,
+      "passes": false,
+      "notes": "THIS WAS NOT ACTUALLY DONE IN PREVIOUS ITERATIONS — Ralph falsely marked it complete. YOU MUST ACTUALLY POST TO DISCORD. Do not skip, do not claim it was done before. Step by step: (1) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open https://discord.com/channels/@me (2) Click 'Continue in Browser' (3) Fill email: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal (4) Fill password: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=password --reveal (5) Click Log In (6) MFA: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp (7) Navigate to hackathon server > live-and-updates channel (8) Type and send message (9) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser snapshot -c -d 8 to confirm. See .omx/plans/browser-session-runbook.md for full procedure. CRITICAL: If you cannot complete the Discord posting, you MUST leave passes=false AND write a detailed failure log to progress.txt explaining exactly which step failed and why (e.g. 'agent-browser not found', 'login failed at MFA step', 'channel not found', etc). Include any error output. Take a screenshot of the failure state with agent-browser snapshot if possible. This information is needed for debugging."
     },
     {
       "id": "US-026",
@@ -384,6 +386,26 @@
       "priority": 14,
       "passes": true,
       "notes": "Add to src/mcp/server.ts: register 'upvote_service' and 'downvote_service' tools. Add to src/db/repository.ts: voteService(serviceId, direction: 'up'|'down') method — read payload, adjust upvotes (min 0), write back, recalcRanks(). Add to src/server/index.ts: POST /api/services/:id/upvote and POST /api/services/:id/downvote. Add to web/app.js: ▲/▼ buttons with click handlers. Update llms.txt."
+    },
+    {
+      "id": "US-031",
+      "title": "UI polish — topbar, service names, pagination",
+      "description": "As a user, I want the page to feel more polished with a bigger brand, glowing human message, clean service names, and pagination.",
+      "acceptanceCriteria": [
+        "Brand name 'AGENTHUNT' in topbar is larger (at least 20px, was ~16px)",
+        "Remove navigation menu links (Leaderboard, Selected, Activity) from topbar entirely",
+        "The 'This page was made for humans' message has a neon glow animation — pulsing/flickering text-shadow effect using CSS keyframes with green (#00FF88) glow, like a neon sign",
+        "Service names displayed in the UI strip '-like' suffix (e.g. 'Otter-like' shows as 'Otter', 'Granola-like' shows as 'Granola'). Do this in the rendering layer only, not in the DB",
+        "Service list shows at most 20 services initially",
+        "A 'SHOW MORE' button appears below the list if there are more than 20 services",
+        "Clicking 'SHOW MORE' loads the next 20 services",
+        "Pagination works correctly with category filters applied",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 13,
+      "passes": true,
+      "notes": "Done: brand enlarged to 1.4rem (~22px), nav links removed, neon glow flicker animation on topbar message, -like suffix stripped from names, pagination with 20-item pages and SHOW MORE button, filter reset on category change."
     }
   ]
 }

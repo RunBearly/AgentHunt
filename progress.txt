@@ -406,3 +406,15 @@
 - **Learnings for future iterations:**
   - prd.json passes flags can regress when the file is edited for other stories — always check git log for completed work before re-doing it
 ---
+
+## 2026-03-28 - US-031
+- What was implemented: UI polish — larger brand, neon glow on human message, stripped -like suffix from names, pagination, removed nav links
+- Files changed:
+  - `web/index.html` — removed nav element with Leaderboard/Selected/Activity links
+  - `web/styles.css` — increased brand font-size from 0.95rem to 1.4rem (~22px); added neon-flicker @keyframes animation with pulsing green text-shadow on topbar-message; added .show-more-btn styles
+  - `web/app.js` — added `cleanServiceName()` helper that strips `-like` suffix; added pagination state (`visibleCount: 20`), `getFilteredServices()` for unsliced filtered list, `getVisibleServices()` returns sliced; SHOW MORE button rendered when more items exist; pagination resets on filter change; `cleanServiceName()` used in top card, regular cards, and detail panel
+- **Learnings for future iterations:**
+  - Pagination state (`visibleCount`) must reset when filter changes, otherwise switching filters could show stale counts
+  - `getFilteredServices()` vs `getVisibleServices()` separation keeps the total count accurate in the header while paginating the rendered list
+  - The neon flicker animation uses varying opacity + text-shadow intensity at irregular keyframe percentages (5%, 10%, 50%, 55%) for a realistic neon sign effect
+---
