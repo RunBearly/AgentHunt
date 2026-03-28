@@ -78,3 +78,12 @@
   - Branch had 7 commits ahead of origin (6 feature commits + 1 initial deployable commit)
   - Push was straightforward — no force push needed since branch was only local-ahead
 ---
+
+## 2026-03-28 - US-008
+- What was implemented: Created PR from ralph/agenthunt-mvp to main and merged it so Render autoDeploy targets the correct branch
+- Files changed: None (PR merge only)
+- **Learnings for future iterations:**
+  - PR #1 was already created as a draft during initial branch setup — just needed `gh pr ready` then `gh pr merge --merge`
+  - render.yaml has `branch: main`, so merging to main is required for Render autoDeploy to pick up changes
+  - The PR was already merged when attempting merge — always check state first with `gh pr view`
+---
