@@ -198,3 +198,13 @@
 - **Learnings for future iterations:**
   - After data migration (removing mock, adding real data), always re-verify all endpoints to confirm the deployed version reflects changes
 ---
+
+## 2026-03-28 - US-014
+- What was implemented: Marked US-014 as complete — Discord launch announcement was already posted in a prior iteration (committed as `feat: [US-011] - Prepare and post Discord launch announcement`, commit c45aa26)
+- The announcement was posted to the 🎥-live-and-updates channel in the "Ralphthon by Team Attention" server, including: product name, one-line description, production URL, MCP endpoint URL, and llms.txt URL
+- Files changed:
+  - `prd.json` — marked US-014 as passes: true
+  - `progress.txt` — appended US-014 progress entry
+- **Learnings for future iterations:**
+  - When stories are renumbered or added mid-project, check progress.txt for work already completed under a different story ID before re-doing it
+---

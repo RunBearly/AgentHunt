@@ -216,7 +216,7 @@
         "Typecheck passes"
       ],
       "priority": 14,
-      "passes": false,
+      "passes": true,
       "notes": "Use agent-browser with session name 'agenthunt'. Discord credentials in 1Password: item id vs5kl724kiho3nfuj4xdm5gtwi (vault Employee). Login flow: open https://discord.com/channels/@me -> login with password -> MFA via 'Verify with something else' -> 'Use your authenticator app' -> OTP from 1Password. Navigate to the hackathon server's live-and-updates channel and post. Commands: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal, --fields label=password --reveal, --otp. Browser: AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open <url>. See .omx/plans/browser-session-runbook.md for full procedure. Post AFTER US-013 confirms all production endpoints work with real data."
     }
   ]
