@@ -203,21 +203,72 @@
         "Typecheck passes"
       ],
       "priority": 13,
-      "passes": true,
-      "notes": "Must re-verify after US-009/010/011 changes are deployed. Actual production URL is https://agenthunt-web.onrender.com. Curl each endpoint: /api/health, /api/services (should return real services not mock), /mcp, /llms.txt, /. Update README.md and llms.txt if URL still says agenthunt.onrender.com (it does — fix to agenthunt-web.onrender.com)."
+      "passes": false,
+      "notes": "Cannot be verified until new code is deployed. Re-verify after US-016 deploys."
     },
     {
       "id": "US-014",
       "title": "Prepare and post Discord launch announcement",
       "description": "As a project maintainer, I need a Discord launch announcement drafted and posted to the designated channel.",
       "acceptanceCriteria": [
-        "Discord announcement copy includes: product name, one-line description, production URL, MCP endpoint URL, and llms.txt URL",
-        "Announcement is posted to the designated Discord channel",
+        "Use agent-browser CLI (AGENT_BROWSER_SESSION_NAME=agenthunt) to open Discord in browser",
+        "Login to Discord using credentials from 1Password (op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee)",
+        "Complete MFA using OTP from 1Password (op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp)",
+        "Navigate to the hackathon Discord server and find the live-and-updates channel",
+        "Post a launch announcement that includes: AgentHunt name, one-line description, production URL (https://agenthunt-web.onrender.com), MCP endpoint (/mcp), and llms.txt URL (/llms.txt)",
+        "Take a screenshot via agent-browser snapshot to confirm the message was posted",
         "Typecheck passes"
       ],
       "priority": 14,
+      "passes": false,
+      "notes": "MUST use agent-browser CLI for Discord posting — do NOT skip this. Full procedure in .omx/plans/browser-session-runbook.md. Commands: (1) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal (2) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=password --reveal (3) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp (4) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open https://discord.com/channels/@me (5) Login with credentials, MFA with OTP (6) Navigate to live-and-updates channel (7) Type and send message (8) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser snapshot -c -d 8 to confirm."
+    },
+    {
+      "id": "US-015",
+      "title": "Merge ralph branch to main and push",
+      "description": "As a developer, I need the ralph/agenthunt-mvp branch merged to main and pushed to origin so Render picks up the seed-removal and real-data changes.",
+      "acceptanceCriteria": [
+        "ralph/agenthunt-mvp is merged into main (merge or rebase)",
+        "main is pushed to origin",
+        "All commits from US-009 through US-014 are on origin/main",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 15,
       "passes": true,
-      "notes": "Use agent-browser with session name 'agenthunt'. Discord credentials in 1Password: item id vs5kl724kiho3nfuj4xdm5gtwi (vault Employee). Login flow: open https://discord.com/channels/@me -> login with password -> MFA via 'Verify with something else' -> 'Use your authenticator app' -> OTP from 1Password. Navigate to the hackathon server's live-and-updates channel and post. Commands: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal, --fields label=password --reveal, --otp. Browser: AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open <url>. See .omx/plans/browser-session-runbook.md for full procedure. Post AFTER US-013 confirms all production endpoints work with real data."
+      "notes": "git checkout main && git merge ralph/agenthunt-mvp && git push origin main. Render has autoDeploy on branch main."
+    },
+    {
+      "id": "US-016",
+      "title": "Wait for Render deploy and verify seed data is gone from production web UI",
+      "description": "As a user, I need to confirm that the production web UI no longer shows MeshRouter, PDF Ghost, or any other mock data.",
+      "acceptanceCriteria": [
+        "curl https://agenthunt-web.onrender.com/app.js does NOT contain MeshRouter or fallbackServices with mock entries",
+        "https://agenthunt-web.onrender.com/api/services returns only real services (GitHub MCP, PostgreSQL MCP, Brave Search MCP)",
+        "The web UI at https://agenthunt-web.onrender.com/ renders the real services, not mock data",
+        "Typecheck passes"
+      ],
+      "priority": 16,
+      "passes": false,
+      "notes": "After US-015 push, Render auto-deploys from main. Check deploy status: source .env && curl -s -H \"Authorization: Bearer $RENDER_API_KEY\" \"https://api.render.com/v1/services/srv-d743cg15pdvs7380qi80/deploys?limit=1\" to confirm deploy succeeded. Then curl the endpoints."
+    },
+    {
+      "id": "US-017",
+      "title": "Final production verification — all endpoints with real data",
+      "description": "As a developer, I need to verify every production endpoint returns correct real data before announcing.",
+      "acceptanceCriteria": [
+        "GET /api/health returns status ok with databaseConnected true",
+        "GET /api/services returns 3+ real services, zero mock services",
+        "GET /api/services/github-mcp-server returns the GitHub MCP service detail",
+        "GET /api/services/github-mcp-server/trust returns trust signals with trustLabel",
+        "POST /mcp with JSON-RPC list_services returns real services",
+        "GET /llms.txt is accessible and lists all 8 MCP tools",
+        "GET / serves web UI that renders real services",
+        "Typecheck passes"
+      ],
+      "priority": 17,
+      "passes": false,
+      "notes": "Curl each endpoint on https://agenthunt-web.onrender.com. This replaces US-013 as the definitive verification after real data is live."
     }
   ]
 }
