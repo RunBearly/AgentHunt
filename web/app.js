@@ -42,16 +42,28 @@ function getDynamicFilters() {
   return filters;
 }
 
+function cleanText(str) {
+  return (str ?? "").replace(/-like/gi, "");
+}
+
 function cleanServiceName(name) {
-  return (name ?? "").replace(/-like$/i, "");
+  return cleanText(name);
 }
 
 function cleanDescription(service) {
   const desc = service.description ?? "";
   if (/-like in category/i.test(desc)) {
-    return service.tagline ?? "";
+    return cleanText(service.tagline ?? "");
   }
-  return desc;
+  return cleanText(desc);
+}
+
+function cleanAgentName(name) {
+  return (name ?? "").replace(/^agent-\d+:/i, "");
+}
+
+function cleanTestedText(tested) {
+  return (tested ?? "").replace(/\s*simulated tasks in run run-\S+/gi, "").trim();
 }
 
 function getFilteredServices() {
@@ -184,7 +196,7 @@ function renderFeed() {
             </div>
             <div>
               <div class="top-service-name">${cleanServiceName(topService.name)}</div>
-              <div class="top-service-desc">${cleanDescription(topService) || topService.tagline || ""}</div>
+              <div class="top-service-desc">${cleanDescription(topService) || cleanText(topService.tagline) || ""}</div>
               <div class="top-service-tags">
                 ${(topService.capabilities ?? []).map((c) => `<span class="service-tag">${c}</span>`).join("")}
               </div>
@@ -210,7 +222,7 @@ function renderFeed() {
         <span class="service-rank">#${service.rank ?? ""}</span>
         <span class="service-category">${(service.category ?? "").toUpperCase().replace(/-/g, " ")}</span>
         <span class="service-name">${cleanServiceName(service.name)}</span>
-        <span class="service-desc">${cleanDescription(service) || service.tagline || ""}</span>
+        <span class="service-desc">${cleanDescription(service) || cleanText(service.tagline) || ""}</span>
         <div class="service-right">
           <span class="service-trust-score">${computeTrustScore(service).total}</span>
           <span class="vote-display">\u25B2 ${service.upvotes ?? 0}</span>
@@ -282,11 +294,11 @@ function renderDetail() {
 
   detailRank.textContent = service.rank ? `#${service.rank}` : "";
   detailName.textContent = cleanServiceName(service.name);
-  detailTagline.textContent = service.tagline ?? "";
+  detailTagline.textContent = cleanText(service.tagline);
   const score = computeTrustScore(service);
   detailUpvotes.textContent = service.upvotes ?? 0;
   detailDescription.textContent = cleanDescription(service);
-  detailHumanNote.textContent = getHumanTranslation(service);
+  detailHumanNote.textContent = cleanText(getHumanTranslation(service));
   detailToolCount.textContent = service.toolCount ? `${service.toolCount} tools in schema` : "";
 
   const reviews = service.reviews ?? [];
@@ -341,12 +353,12 @@ function renderDetail() {
         <article class="review-card">
           <header>
             <div>
-              <h4>${review.agent}</h4>
-              <p class="review-meta">${review.tested}</p>
+              <h4>${cleanAgentName(review.agent)}</h4>
+              <p class="review-meta">${cleanTestedText(review.tested)}</p>
             </div>
             <span class="review-score-mini">${review.score.toFixed(1)}</span>
           </header>
-          <p>${review.summary}</p>
+          <p>${cleanText(review.summary)}</p>
         </article>
       `
     )
