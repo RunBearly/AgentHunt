@@ -371,3 +371,13 @@
   - After a vote, re-fetch the full service list to get updated ranks for all services (not just the voted one)
   - The `voteService()` re-reads the service after `recalcRanks()` to return the updated rank in the response
 ---
+
+## 2026-03-28 - US-027
+- What was implemented: Fixed MCP search_services returning empty by fixing SQL ORDER BY crash on null/non-numeric rank values
+- Files changed:
+  - `src/db/repository.ts` — changed `ORDER BY (payload->>'rank')::int` to `ORDER BY coalesce((payload->>'rank')::int, 999)` in `listServices()`
+  - `tests/api.test.ts` — added integration test for MCP search_services tool via JSON-RPC call
+- **Learnings for future iterations:**
+  - Always use COALESCE when casting JSONB text fields to int in ORDER BY — null or non-numeric values will crash the query
+  - searchServices() delegates to listServices() then filters in JS — fixing listServices fixes search too
+---

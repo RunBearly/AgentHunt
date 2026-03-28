@@ -324,8 +324,8 @@
         "Tests pass"
       ],
       "priority": 17,
-      "passes": false,
-      "notes": "In src/db/repository.ts listServices() line 79: ORDER BY (payload->>'rank')::int may fail if rank is null or not a number. Fix: use COALESCE((payload->>'rank')::int, 999) or ORDER BY payload->>'rank' as text. Also check if searchServices text matching works correctly for all fields — the spread of empty arrays is fine but verify with a test."
+      "passes": true,
+      "notes": "Fixed: ORDER BY now uses COALESCE((payload->>'rank')::int, 999) to handle null/non-numeric rank values. Added MCP search_services integration test."
     },
     {
       "id": "US-028",
