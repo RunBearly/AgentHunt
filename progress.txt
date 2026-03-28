@@ -346,3 +346,12 @@
   - Service payload is a full JSONB column — update by reading payload, modifying in JS, and writing back the full JSON (no partial jsonb_set needed since we touch multiple fields)
   - `count(*) filter (where success = true)` is a clean Postgres pattern for conditional aggregation
 ---
+
+## 2026-03-28 - US-029
+- What was implemented: Fixed detail panel scroll overflow by adding max-height and overflow-y: auto
+- Files changed:
+  - `web/styles.css` — added `max-height: calc(100vh - 60px)` and `overflow-y: auto` to `.detail-panel`; reset both properties to `none`/`visible` at 1100px breakpoint where panel becomes `position: static`
+- **Learnings for future iterations:**
+  - Sticky detail panels need both `max-height` and `overflow-y: auto` to scroll within the viewport — sticky alone doesn't constrain height
+  - On mobile breakpoints where the panel becomes `position: static`, remove the max-height/overflow constraints so it flows naturally with the page
+---

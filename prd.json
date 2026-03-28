@@ -276,7 +276,7 @@
         "Web UI at / renders redesigned command-center layout with Top Service highlight",
         "Typecheck passes"
       ],
-      "priority": 21,
+      "priority": 22,
       "passes": false,
       "notes": "Verified 2026-03-28: all 7 endpoints confirmed with real data. Deploy dep-d744905ipkoc738e1650 live."
     },
@@ -293,7 +293,7 @@
         "Take a screenshot via agent-browser snapshot to confirm the message was posted",
         "Typecheck passes"
       ],
-      "priority": 22,
+      "priority": 23,
       "passes": false,
       "notes": "MUST use agent-browser CLI for Discord posting — do NOT skip this. Full procedure in .omx/plans/browser-session-runbook.md. Commands: (1) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal (2) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=password --reveal (3) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp (4) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open https://discord.com/channels/@me (5) Login with credentials, MFA with OTP (6) Navigate to live-and-updates channel (7) Type and send message (8) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser snapshot -c -d 8 to confirm."
     },
@@ -323,7 +323,7 @@
         "Typecheck passes",
         "Tests pass"
       ],
-      "priority": 16,
+      "priority": 17,
       "passes": false,
       "notes": "In src/db/repository.ts listServices() line 79: ORDER BY (payload->>'rank')::int may fail if rank is null or not a number. Fix: use COALESCE((payload->>'rank')::int, 999) or ORDER BY payload->>'rank' as text. Also check if searchServices text matching works correctly for all fields — the spread of empty arrays is fine but verify with a test."
     },
@@ -360,9 +360,30 @@
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
       ],
+      "priority": 15,
+      "passes": true,
+      "notes": "Current state: detail panel has overflow:visible, height:2062px, position:sticky, maxHeight:none. Fix in web/styles.css: add overflow-y:auto and max-height:calc(100vh - 56px) (topbar is 56px) to the detail panel. On mobile breakpoint, remove sticky position and max-height so it flows normally."
+    },
+    {
+      "id": "US-030",
+      "title": "Add upvote/downvote MCP tools and HTTP API endpoints",
+      "description": "As an agent or user, I want to upvote or downvote a service so that community signal drives ranking.",
+      "acceptanceCriteria": [
+        "New MCP tool 'upvote_service' accepts serviceId (string, required) and agent (string, optional) — increments upvotes by 1",
+        "New MCP tool 'downvote_service' accepts serviceId (string, required) and agent (string, optional) — decrements upvotes by 1 (minimum 0)",
+        "Both tools trigger rank recalculation across all services",
+        "New HTTP endpoint POST /api/services/:id/upvote increments upvotes by 1",
+        "New HTTP endpoint POST /api/services/:id/downvote decrements upvotes by 1 (minimum 0)",
+        "Both endpoints return the updated service with new upvotes count and rank",
+        "Web UI shows upvote (▲) and downvote (▼) buttons on service cards",
+        "Clicking ▲ or ▼ calls the respective API and updates the count without full page reload",
+        "llms.txt is updated to include both upvote_service and downvote_service tools",
+        "Typecheck passes",
+        "Tests pass"
+      ],
       "priority": 14,
       "passes": false,
-      "notes": "Current state: detail panel has overflow:visible, height:2062px, position:sticky, maxHeight:none. Fix in web/styles.css: add overflow-y:auto and max-height:calc(100vh - 56px) (topbar is 56px) to the detail panel. On mobile breakpoint, remove sticky position and max-height so it flows normally."
+      "notes": "Add to src/mcp/server.ts: register 'upvote_service' and 'downvote_service' tools. Add to src/db/repository.ts: voteService(serviceId, direction: 'up'|'down') method — read payload, adjust upvotes (min 0), write back, recalcRanks(). Add to src/server/index.ts: POST /api/services/:id/upvote and POST /api/services/:id/downvote. Add to web/app.js: ▲/▼ buttons with click handlers. Update llms.txt."
     }
   ]
 }
