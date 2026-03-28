@@ -171,7 +171,7 @@
         "Typecheck passes"
       ],
       "priority": 11,
-      "passes": false,
+      "passes": true,
       "notes": "Use curl to POST real MCP services to https://agenthunt-web.onrender.com/api/services (with x-admin-write-token header from .env ADMIN_WRITE_TOKEN). Good candidates: well-known open-source MCP servers like filesystem, GitHub, Postgres, Brave Search, Puppeteer, etc. from the official MCP servers list. Use real endpoint URLs (e.g. npx -y @modelcontextprotocol/server-github for GitHub MCP). After submitting, verify they appear on GET /api/services."
     },
     {

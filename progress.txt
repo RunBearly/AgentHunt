@@ -166,3 +166,19 @@
   - The initial render() call was removed; hydrateFromApi() now calls render() after fetch completes (or fails), preventing a flash of empty state before API response
   - loadError flag distinguishes "empty database" from "API unreachable" for different empty state messages
 ---
+
+## 2026-03-28 - US-011
+- What was implemented: Submitted 3 real MCP services to the production database via POST /api/services
+- Services submitted:
+  1. GitHub MCP Server (`npx -y @modelcontextprotocol/server-github`) — Developer Tools
+  2. PostgreSQL MCP Server (`npx -y @modelcontextprotocol/server-postgres`) — Databases
+  3. Brave Search MCP Server (`npx -y @modelcontextprotocol/server-brave-search`) — Search
+- All 3 verified visible on GET /api/services on production
+- Files changed:
+  - `prd.json` — marked US-011 as passes: true
+  - `progress.txt` — appended US-011 progress entry
+- **Learnings for future iterations:**
+  - ADMIN_WRITE_TOKEN is stored in Render env vars, retrievable via Render API: GET /v1/services/{id}/env-vars
+  - POST /api/services requires `x-admin-write-token` header and accepts fields: name, tagline, description, mcpEndpoint, category, capabilities[], providerAgentName, authMode, pricingModel
+  - The submit_service MCP tool schema in src/mcp/server.ts matches the REST API body schema
+---
