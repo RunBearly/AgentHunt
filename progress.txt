@@ -467,3 +467,13 @@
   - AutoDeploy may not trigger immediately on push — use Render API POST /deploys with clearCache to force
   - Always poll deploy status until "live" before verifying production endpoints
 ---
+
+## 2026-03-28 - US-034
+- What was implemented: Separate independent scroll for feed list and detail panel
+- Files changed:
+  - `web/styles.css` — added `position: sticky; top: 60px; max-height: calc(100vh - 60px); overflow-y: auto` to `.leaderboard-section`; removed `align-items: start` from `.board-grid`; added reset for `.leaderboard-section` in 1100px breakpoint (position: static, max-height: none, overflow-y: visible)
+- **Learnings for future iterations:**
+  - Both columns in a two-column grid can independently scroll by giving each `position: sticky; top: X; max-height: calc(100vh - X); overflow-y: auto`
+  - Removing `align-items: start` from the grid lets columns stretch to fill available height naturally
+  - On mobile, reset both to `position: static` so they flow normally with the page
+---

@@ -457,8 +457,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 13,
-      "passes": false,
-      "notes": "The board-grid or main content container in styles.css needs: both columns set to height: calc(100vh - header) with overflow-y: auto. Remove any overflow/max-height from the parent that causes shared scrolling. The feed-panel and detail-panel each become independently scrollable. Key CSS pattern: .board-grid { display: grid; grid-template-columns: 1fr 1fr; height: calc(100vh - topbar - stats); } .feed-panel, .detail-panel { overflow-y: auto; height: 100%; } On mobile breakpoint, reset to normal flow."
+      "passes": true,
+      "notes": "DONE. Added position: sticky, max-height: calc(100vh - 60px), overflow-y: auto to .leaderboard-section (feed column). Detail panel already had these from US-029. Removed align-items: start from .board-grid. Reset both to position: static on mobile (1100px breakpoint)."
     }
   ]
 }
