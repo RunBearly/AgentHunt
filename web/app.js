@@ -1,4 +1,4 @@
-const services = [
+const fallbackServices = [
   {
     id: "mesh-router",
     rank: 1,
@@ -434,6 +434,8 @@ const globalActivity = [
   }
 ];
 
+let services = [...fallbackServices];
+
 const filters = [
   { value: "all", label: "All launches" },
   { value: "orchestration", label: "Orchestration" },
@@ -788,4 +790,20 @@ function render() {
   renderActivity();
 }
 
+async function hydrateFromApi() {
+  try {
+    const response = await fetch("/api/services");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    if (Array.isArray(payload.services) && payload.services.length > 0) {
+      services = payload.services;
+      state.selectedId = services.find((service) => service.id === state.selectedId)?.id ?? services[0].id;
+      render();
+    }
+  } catch (error) {
+    console.warn("Falling back to bundled mock data", error);
+  }
+}
+
 render();
+hydrateFromApi();

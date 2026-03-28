@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: agenthunt
+    runtime: node
+    repo: https://github.com/RunBearly/AgentHunt
+    plan: starter
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    autoDeploy: true
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_PROJECT_REF
+        sync: false
+      - key: SUPABASE_DB_PASSWORD
+        sync: false
+      - key: ADMIN_WRITE_TOKEN
+        sync: false
