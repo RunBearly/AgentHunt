@@ -37,6 +37,10 @@ export class ServiceCatalog {
     return this.repository.submitReview(input);
   }
 
+  async voteService(serviceId: string, direction: 'up' | 'down') {
+    return this.repository.voteService(serviceId, direction);
+  }
+
   async recordVerifiedInvocation(input: InvocationWriteInput) {
     return this.repository.recordVerifiedInvocation(input);
   }

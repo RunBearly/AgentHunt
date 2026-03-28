@@ -402,6 +402,53 @@ a {
 .service-upvotes {
   font-size: 0.78rem;
   color: var(--text-secondary);
+  min-width: 20px;
+  text-align: center;
+}
+
+/* ── Vote controls ── */
+.vote-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.vote-controls-inline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.vote-btn, .vote-btn-sm {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.7rem;
+  line-height: 1;
+  padding: 3px 6px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.vote-btn:hover, .vote-btn-sm:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.vote-btn.vote-up:hover, .vote-btn-sm.vote-up:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.vote-btn.vote-down:hover, .vote-btn-sm.vote-down:hover {
+  color: #ff4444;
+  border-color: #ff4444;
+}
+
+.vote-btn-sm {
+  padding: 2px 4px;
+  font-size: 0.6rem;
 }
 
 /* ── Status badges ── */

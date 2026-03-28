@@ -167,8 +167,12 @@ function renderFeed() {
         </div>
         <div class="top-service-right">
           ${formatTrustBadge(topService)}
-          <span class="top-service-upvotes">\u25B2 ${topService.upvotes ?? 0}</span>
-          <span style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">UPVOTES</span>
+          <div class="vote-controls">
+            <button class="vote-btn vote-up" data-vote-id="${topService.id}" data-vote-dir="up" title="Upvote">\u25B2</button>
+            <span class="top-service-upvotes">${topService.upvotes ?? 0}</span>
+            <button class="vote-btn vote-down" data-vote-id="${topService.id}" data-vote-dir="down" title="Downvote">\u25BC</button>
+          </div>
+          <span style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">VOTES</span>
         </div>
       </div>
     </article>
@@ -183,7 +187,11 @@ function renderFeed() {
         <span class="service-name">${service.name ?? ""}</span>
         <span class="service-desc">${service.tagline ?? service.description ?? ""}</span>
         <div class="service-right">
-          <span class="service-upvotes">\u25B2 ${service.upvotes ?? 0}</span>
+          <div class="vote-controls-inline">
+            <button class="vote-btn-sm vote-up" data-vote-id="${service.id}" data-vote-dir="up" title="Upvote">\u25B2</button>
+            <span class="service-upvotes">${service.upvotes ?? 0}</span>
+            <button class="vote-btn-sm vote-down" data-vote-id="${service.id}" data-vote-dir="down" title="Downvote">\u25BC</button>
+          </div>
         </div>
       </article>
     `;
@@ -192,11 +200,19 @@ function renderFeed() {
   serviceList.innerHTML = html;
 
   serviceList.querySelectorAll("[data-service-id]").forEach((card) => {
-    card.addEventListener("click", () => {
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("[data-vote-id]")) return;
       state.selectedId = card.dataset.serviceId;
       renderFeed();
       renderDetail();
       fetchServiceDetail(card.dataset.serviceId);
+    });
+  });
+
+  serviceList.querySelectorAll("[data-vote-id]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      handleVote(btn.dataset.voteId, btn.dataset.voteDir);
     });
   });
 }
@@ -346,6 +362,29 @@ async function fetchServiceDetail(serviceId) {
     }
   } catch (e) {
     console.warn("Failed to fetch service detail", e);
+  }
+}
+
+async function handleVote(serviceId, direction) {
+  try {
+    const response = await fetch(`/api/services/${encodeURIComponent(serviceId)}/${direction}vote`, { method: "POST" });
+    if (!response.ok) return;
+    const updated = await response.json();
+    const idx = services.findIndex((s) => s.id === serviceId);
+    if (idx !== -1) {
+      services[idx] = { ...services[idx], ...updated };
+    }
+    // Re-fetch all services to get updated ranks
+    const listResp = await fetch("/api/services");
+    if (listResp.ok) {
+      const payload = await listResp.json();
+      if (Array.isArray(payload.services)) {
+        services = payload.services;
+      }
+    }
+    render();
+  } catch (e) {
+    console.warn("Vote failed", e);
   }
 }
 

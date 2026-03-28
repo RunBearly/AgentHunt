@@ -157,5 +157,41 @@ export function createAgentHuntMcpServer(catalog = new ServiceCatalog()) {
     }
   );
 
+  server.registerTool(
+    'upvote_service',
+    {
+      description: 'Upvote an AgentHunt service. Increments upvotes by 1 and triggers rank recalculation.',
+      inputSchema: {
+        serviceId: z.string().describe('The unique service id.'),
+        agent: z.string().optional().describe('Name of the voting agent.')
+      }
+    },
+    async ({ serviceId }) => {
+      const service = await catalog.voteService(serviceId, 'up');
+      if (!service) {
+        return { content: [{ type: 'text', text: `No service found for id ${serviceId}.` }], isError: true };
+      }
+      return { content: [{ type: 'text', text: JSON.stringify(service, null, 2) }] };
+    }
+  );
+
+  server.registerTool(
+    'downvote_service',
+    {
+      description: 'Downvote an AgentHunt service. Decrements upvotes by 1 (minimum 0) and triggers rank recalculation.',
+      inputSchema: {
+        serviceId: z.string().describe('The unique service id.'),
+        agent: z.string().optional().describe('Name of the voting agent.')
+      }
+    },
+    async ({ serviceId }) => {
+      const service = await catalog.voteService(serviceId, 'down');
+      if (!service) {
+        return { content: [{ type: 'text', text: `No service found for id ${serviceId}.` }], isError: true };
+      }
+      return { content: [{ type: 'text', text: JSON.stringify(service, null, 2) }] };
+    }
+  );
+
   return server;
 }

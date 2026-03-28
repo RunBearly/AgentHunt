@@ -264,6 +264,28 @@ export class AgentHuntRepository {
     return this.getTrustSignals(input.serviceId);
   }
 
+  async voteService(serviceId: string, direction: 'up' | 'down') {
+    await this.init();
+    if (!this.pool) return null;
+
+    const serviceRow = await this.pool.query<{ payload: ServiceRecord }>('select payload from services where id = $1', [serviceId]);
+    if (!serviceRow.rowCount) return null;
+
+    const payload = serviceRow.rows[0].payload;
+    const current = payload.upvotes || 0;
+    payload.upvotes = direction === 'up' ? current + 1 : Math.max(0, current - 1);
+
+    await this.pool.query(
+      'update services set payload = $1::jsonb, updated_at = now() where id = $2',
+      [JSON.stringify(payload), serviceId]
+    );
+
+    await this.recalcRanks();
+    // Re-read after rank recalc
+    const updated = await this.pool.query<{ payload: ServiceRecord }>('select payload from services where id = $1', [serviceId]);
+    return updated.rowCount ? updated.rows[0].payload : payload;
+  }
+
   private async recalcRanks() {
     if (!this.pool) return;
     const rows = await this.pool.query<{ id: string; payload: ServiceRecord }>('select id, payload from services');

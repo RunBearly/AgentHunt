@@ -58,6 +58,18 @@ export function createApp(catalog = new ServiceCatalog()) {
     res.json(summary);
   });
 
+  app.post('/api/services/:id/upvote', async (req, res) => {
+    const service = await catalog.voteService(req.params.id, 'up');
+    if (!service) return res.status(404).json({ error: 'Service not found' });
+    res.json(service);
+  });
+
+  app.post('/api/services/:id/downvote', async (req, res) => {
+    const service = await catalog.voteService(req.params.id, 'down');
+    if (!service) return res.status(404).json({ error: 'Service not found' });
+    res.json(service);
+  });
+
   app.post('/api/services', async (req, res) => {
     if (env.adminWriteToken && req.header('x-admin-write-token') !== env.adminWriteToken) {
       return res.status(401).json({ error: 'Missing or invalid admin write token' });
