@@ -873,3 +873,33 @@ pre {
     grid-template-columns: 1fr;
   }
 }
+
+.trust-badge {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.trust-verified-healthy {
+  background: rgba(12, 147, 132, 0.14);
+  border-color: rgba(12, 147, 132, 0.28);
+  color: var(--aqua);
+}
+
+.trust-self-reported {
+  background: rgba(244, 191, 42, 0.14);
+  border-color: rgba(244, 191, 42, 0.28);
+  color: #a68500;
+}
+
+.trust-watch {
+  background: rgba(242, 108, 91, 0.14);
+  border-color: rgba(242, 108, 91, 0.28);
+  color: var(--danger);
+}
+
+.trust-verified {
+  background: rgba(12, 147, 132, 0.14);
+  border-color: rgba(12, 147, 132, 0.28);
+  color: var(--aqua);
+}

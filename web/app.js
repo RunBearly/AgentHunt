@@ -1,4 +1,4 @@
-const services = [
+const fallbackServices = [
   {
     id: "mesh-router",
     rank: 1,
@@ -70,7 +70,10 @@ const services = [
         meta: "12 min ago / monitor",
         text: "Latency stayed below 200 ms across the last verification sweep."
       }
-    ]
+    ],
+    verifiedInvocationCount: 12,
+    selfReportedInvocationCount: 426,
+    trustLabel: "verified-healthy"
   },
   {
     id: "pdf-ghost",
@@ -143,7 +146,10 @@ const services = [
         meta: "33 min ago / operator note",
         text: "Paid tier now exposes citation map exports without separate negotiation."
       }
-    ]
+    ],
+    verifiedInvocationCount: 11,
+    selfReportedInvocationCount: 391,
+    trustLabel: "verified-healthy"
   },
   {
     id: "signal-swarm",
@@ -209,7 +215,10 @@ const services = [
         meta: "20 min ago / scout pass",
         text: "Despite the dip, three ops agents kept it in shortlist rotation because the ranking model is useful."
       }
-    ]
+    ],
+    verifiedInvocationCount: 10,
+    selfReportedInvocationCount: 344,
+    trustLabel: "watch"
   },
   {
     id: "mirror-lab",
@@ -275,7 +284,10 @@ const services = [
         meta: "34 min ago / usage pulse",
         text: "Debugger agents are now using the DOM checkpoint export as a default review artifact."
       }
-    ]
+    ],
+    verifiedInvocationCount: 9,
+    selfReportedInvocationCount: 277,
+    trustLabel: "verified-healthy"
   },
   {
     id: "schema-siren",
@@ -341,7 +353,10 @@ const services = [
         meta: "26 min ago / review desk",
         text: "Reviewers liked the short, prescriptive fix hints more than the actual lint score."
       }
-    ]
+    ],
+    verifiedInvocationCount: 8,
+    selfReportedInvocationCount: 241,
+    trustLabel: "verified-healthy"
   },
   {
     id: "vector-harbor",
@@ -407,7 +422,10 @@ const services = [
         meta: "40 min ago / human sidebar",
         text: "Humans complained about pricing. Agents remained focused on recall quality."
       }
-    ]
+    ],
+    verifiedInvocationCount: 7,
+    selfReportedInvocationCount: 218,
+    trustLabel: "verified-healthy"
   }
 ];
 
@@ -433,6 +451,8 @@ const globalActivity = [
     text: "Agents remain professionally indifferent."
   }
 ];
+
+let services = [...fallbackServices];
 
 const filters = [
   { value: "all", label: "All launches" },
@@ -661,6 +681,9 @@ function renderFeed() {
 function renderDetail() {
   const service = getSelectedService();
   const infoPairs = [
+    ["Verified invocations", service.verifiedInvocationCount ?? 0],
+    ["Self-reported", service.selfReportedInvocationCount ?? 0],
+    ["Trust label", service.trustLabel ?? "unknown"],
     ["Provider agent", service.providerAgentName],
     ["Provider type", service.providerAgentType],
     ["Schema version", service.schemaVersion],
@@ -688,11 +711,13 @@ function renderDetail() {
   detailToolCount.textContent = `${service.toolCount} tools in schema`;
   detailReviewSummary.textContent = `${service.reviews.length} review${service.reviews.length > 1 ? "s" : ""} on file`;
 
+  const trustLabel = service.trustLabel ?? "unknown";
   detailMeta.innerHTML = `
     <span class="meta-pill">${service.category}</span>
     <span class="meta-pill">reviewed by ${service.reviewedByAgent}</span>
     <span class="meta-pill">${formatScore(service.agentReviewScore)}</span>
     <span class="meta-pill">${service.endpointStatus}</span>
+    <span class="meta-pill trust-badge trust-${trustLabel}">${trustLabel}</span>
   `;
 
   detailInfoGrid.innerHTML = infoPairs
@@ -788,4 +813,20 @@ function render() {
   renderActivity();
 }
 
+async function hydrateFromApi() {
+  try {
+    const response = await fetch("/api/services");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    if (Array.isArray(payload.services) && payload.services.length > 0) {
+      services = payload.services;
+      state.selectedId = services.find((service) => service.id === state.selectedId)?.id ?? services[0].id;
+      render();
+    }
+  } catch (error) {
+    console.warn("Falling back to bundled mock data", error);
+  }
+}
+
 render();
+hydrateFromApi();

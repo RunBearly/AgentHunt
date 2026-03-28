@@ -1,0 +1,102 @@
+{
+  "project": "AgentHunt",
+  "branchName": "ralph/agenthunt-mvp",
+  "description": "Complete AgentHunt MVP: deploy to Render, verify Supabase connectivity, finalize launch artifacts, and ship launch commit",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Add integration tests for MCP endpoint and HTTP API",
+      "description": "As a developer, I need integration tests that verify the MCP endpoint and HTTP API work end-to-end with seeded data.",
+      "acceptanceCriteria": [
+        "Test file tests/api.test.ts exists",
+        "Test verifies GET /api/health returns status ok",
+        "Test verifies GET /api/services returns array of services",
+        "Test verifies GET /api/services/:id returns a service with trust fields",
+        "Test verifies GET /api/services/:id/reviews returns reviews array",
+        "Test verifies GET /api/services/:id/trust returns verifiedInvocationCount and selfReportedInvocationCount",
+        "Test verifies POST /api/services creates a new service (with admin token if configured)",
+        "Test verifies POST /mcp with a valid JSON-RPC list_services call returns a valid response",
+        "Tests pass",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Add trust signal distinction to web UI",
+      "description": "As a human browsing AgentHunt, I want to see verified vs self-reported invocation counts clearly distinguished on each service card and detail panel.",
+      "acceptanceCriteria": [
+        "Service detail panel shows 'Verified invocations: N' and 'Self-reported: N' as separate labeled values",
+        "Service detail panel shows a trust label badge (verified-healthy, self-reported, watch)",
+        "The info grid in web/app.js includes verifiedInvocationCount, selfReportedInvocationCount, and trustLabel fields",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "The data already includes these fields from the backend; the UI just needs to render them distinctly."
+    },
+    {
+      "id": "US-003",
+      "title": "Update README with production deployment instructions",
+      "description": "As a developer or judge, I want the README to include the final production host URL, MCP usage example with curl, and clear setup instructions.",
+      "acceptanceCriteria": [
+        "README.md includes production URL placeholder section (to be filled after deploy)",
+        "README.md includes a curl example showing how to call the MCP endpoint with a JSON-RPC request",
+        "README.md includes a curl example showing GET /api/services",
+        "README.md references llms.txt availability at /llms.txt",
+        "README.md removes the 'Launch-time checklist' section and replaces with actual launch info",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Update llms.txt with complete tool surface documentation",
+      "description": "As an AI agent discovering AgentHunt, I want llms.txt to list all 8 MCP tools with their input schemas so I can connect without guessing.",
+      "acceptanceCriteria": [
+        "llms.txt lists all 8 MCP tools: list_services, search_services, get_service_details, get_service_reviews, get_service_trust_signals, submit_service, submit_review, record_verified_invocation",
+        "Each tool entry includes a one-line description and lists required input fields",
+        "llms.txt includes the MCP endpoint path /mcp",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Verify Render deployment config and add health check",
+      "description": "As an operator, I want render.yaml to include a health check path and correct Node version so deployment succeeds on first try.",
+      "acceptanceCriteria": [
+        "render.yaml includes healthCheckPath: /api/health",
+        "render.yaml includes NODE_VERSION env var set to 22",
+        "package.json engines.node matches render config",
+        "Build succeeds with npm run build",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Create launch commit with Launch AgentHunt prefix",
+      "description": "As a project maintainer, I want the final commit to use the reserved 'Launch AgentHunt' prefix as required by the PRD.",
+      "acceptanceCriteria": [
+        "All previous stories pass",
+        "A commit exists with message starting with 'Launch AgentHunt'",
+        "The commit includes all launch artifacts: updated README, llms.txt, render.yaml",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 6,
+      "passes": true,
+      "notes": "This is the final story. Only create this commit after all other stories pass."
+    }
+  ]
+}
