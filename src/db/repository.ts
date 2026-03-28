@@ -1,17 +1,6 @@
 import { Pool } from 'pg';
-import servicesSeed from '../seed/services.json' with { type: 'json' };
 import { env } from '../config/env.js';
 import type { InvocationWriteInput, ReviewWriteInput, ServiceRecord, ServiceWriteInput } from '../domain/types.js';
-
-const defaultVerified = 12;
-const defaultSelfReported = 42;
-
-const seededServices: ServiceRecord[] = (servicesSeed as ServiceRecord[]).map((service, index) => ({
-  ...service,
-  verifiedInvocationCount: service.verifiedInvocationCount ?? Math.max(3, defaultVerified - index),
-  selfReportedInvocationCount: service.selfReportedInvocationCount ?? service.upvotes,
-  trustLabel: service.trustLabel ?? (service.endpointStatus === 'Live' ? 'verified-healthy' : 'watch')
-}));
 
 type Health = {
   mode: 'database' | 'seed';
@@ -37,7 +26,6 @@ export class AgentHuntRepository {
       this.pool = new Pool({ connectionString: env.databaseUrl, ssl: { rejectUnauthorized: false } });
       await this.pool.query('select 1');
       await this.ensureSchema();
-      await this.seedIfEmpty();
       this.health = { mode: 'database', databaseConnected: true };
     } catch (error) {
       this.health = {
@@ -82,35 +70,10 @@ export class AgentHuntRepository {
     `);
   }
 
-  private async seedIfEmpty() {
-    if (!this.pool) return;
-    const existing = await this.pool.query<{ count: string }>('select count(*)::text as count from services');
-    if (Number(existing.rows[0]?.count || '0') > 0) return;
-
-    for (const service of seededServices) {
-      await this.pool.query(
-        'insert into services (id, payload) values ($1, $2::jsonb) on conflict (id) do nothing',
-        [service.id, JSON.stringify(service)]
-      );
-      for (const review of service.reviews) {
-        await this.pool.query(
-          'insert into service_reviews (service_id, payload) values ($1, $2::jsonb)',
-          [service.id, JSON.stringify(review)]
-        );
-      }
-      for (let i = 0; i < (service.verifiedInvocationCount ?? 0); i += 1) {
-        await this.pool.query(
-          'insert into verified_invocations (service_id, agent, success, latency_ms) values ($1, $2, $3, $4)',
-          [service.id, `seed-agent-${i + 1}`, true, service.latencyMs]
-        );
-      }
-    }
-  }
-
   async listServices(category?: string) {
     await this.init();
     if (!this.pool) {
-      return seededServices.filter((service) => !category || service.category === category);
+      return [];
     }
 
     const rows = await this.pool.query<{ payload: ServiceRecord }>('select payload from services order by (payload->>\'rank\')::int asc');
@@ -121,7 +84,7 @@ export class AgentHuntRepository {
   async getService(id: string) {
     await this.init();
     if (!this.pool) {
-      return seededServices.find((service) => service.id === id) ?? null;
+      return null;
     }
 
     const service = await this.pool.query<{ payload: ServiceRecord }>('select payload from services where id = $1', [id]);
@@ -144,7 +107,7 @@ export class AgentHuntRepository {
   async getReviews(serviceId: string) {
     await this.init();
     if (!this.pool) {
-      return seededServices.find((service: ServiceRecord) => service.id === serviceId)?.reviews ?? [];
+      return [];
     }
     const rows = await this.pool.query<{ payload: ServiceRecord['reviews'][number] }>(
       'select payload from service_reviews where service_id = $1 order by id desc',
@@ -217,8 +180,6 @@ export class AgentHuntRepository {
         'insert into services (id, payload) values ($1, $2::jsonb) on conflict (id) do update set payload = excluded.payload, updated_at = now()',
         [service.id, JSON.stringify(service)]
       );
-    } else {
-      seededServices.unshift(service);
     }
     return service;
   }
@@ -234,9 +195,6 @@ export class AgentHuntRepository {
 
     if (this.pool) {
       await this.pool.query('insert into service_reviews (service_id, payload) values ($1, $2::jsonb)', [input.serviceId, JSON.stringify(review)]);
-    } else {
-      const service = seededServices.find((entry) => entry.id === input.serviceId);
-      service?.reviews.unshift(review);
     }
     return review;
   }
@@ -248,9 +206,6 @@ export class AgentHuntRepository {
         'insert into verified_invocations (service_id, agent, success, latency_ms) values ($1, $2, $3, $4)',
         [input.serviceId, input.agent || 'unknown-agent', input.success ?? true, input.latencyMs ?? null]
       );
-    } else {
-      const service = seededServices.find((entry) => entry.id === input.serviceId);
-      if (service) service.verifiedInvocationCount = (service.verifiedInvocationCount ?? 0) + 1;
     }
     return this.getTrustSignals(input.serviceId);
   }

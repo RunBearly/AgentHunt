@@ -39,26 +39,19 @@ describe('GET /api/services', () => {
     assert.equal(res.status, 200);
     const body = await res.json();
     assert.ok(Array.isArray(body.services));
-    assert.ok(body.services.length > 0);
   });
 });
 
 describe('GET /api/services/:id', () => {
-  it('returns a service with trust fields', async () => {
-    const res = await fetch(`${baseUrl}/api/services/mesh-router`);
-    assert.equal(res.status, 200);
-    const body = await res.json();
-    assert.equal(body.id, 'mesh-router');
-    assert.equal(typeof body.name, 'string');
-    assert.ok('verifiedInvocationCount' in body);
-    assert.ok('selfReportedInvocationCount' in body);
-    assert.ok('trustLabel' in body);
+  it('returns 404 for nonexistent service', async () => {
+    const res = await fetch(`${baseUrl}/api/services/nonexistent`);
+    assert.equal(res.status, 404);
   });
 });
 
 describe('GET /api/services/:id/reviews', () => {
   it('returns reviews array', async () => {
-    const res = await fetch(`${baseUrl}/api/services/mesh-router/reviews`);
+    const res = await fetch(`${baseUrl}/api/services/any-id/reviews`);
     assert.equal(res.status, 200);
     const body = await res.json();
     assert.ok(Array.isArray(body.reviews));
@@ -66,12 +59,9 @@ describe('GET /api/services/:id/reviews', () => {
 });
 
 describe('GET /api/services/:id/trust', () => {
-  it('returns verifiedInvocationCount and selfReportedInvocationCount', async () => {
-    const res = await fetch(`${baseUrl}/api/services/mesh-router/trust`);
-    assert.equal(res.status, 200);
-    const body = await res.json();
-    assert.equal(typeof body.verifiedInvocationCount, 'number');
-    assert.equal(typeof body.selfReportedInvocationCount, 'number');
+  it('returns 404 for nonexistent service', async () => {
+    const res = await fetch(`${baseUrl}/api/services/nonexistent/trust`);
+    assert.equal(res.status, 404);
   });
 });
 
@@ -97,14 +87,12 @@ describe('POST /api/services', () => {
 
 async function parseSseJsonResponse(res: Response): Promise<unknown> {
   const text = await res.text();
-  // Extract JSON data from SSE events (format: "event: message\ndata: {...}\n\n")
   const lines = text.split('\n');
   for (const line of lines) {
     if (line.startsWith('data: ')) {
       return JSON.parse(line.slice(6));
     }
   }
-  // If not SSE, try parsing as plain JSON
   return JSON.parse(text);
 }
 
