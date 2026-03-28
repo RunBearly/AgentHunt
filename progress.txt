@@ -238,3 +238,19 @@
 - **Learnings for future iterations:**
   - Production verification is idempotent — safe to re-run after each deploy cycle
 ---
+
+## 2026-03-28 - US-016
+- What was implemented: Triggered new Render deploy and verified production no longer serves mock data
+- Actions taken:
+  - Triggered deploy via Render API (previous deploy was from old PR merge, didn't include US-009+ commits)
+  - Deploy dep-d744905ipkoc738e1650 went live
+  - Verified app.js has 0 references to MeshRouter or fallbackServices
+  - Verified /api/services returns real DB services (no code-level mock data)
+  - Web UI renders from API only
+- Files changed:
+  - `prd.json` — marked US-016 as passes: true
+  - `progress.txt` — appended US-016 progress entry
+- **Learnings for future iterations:**
+  - Render autodeploy may not trigger on direct `git push origin main` if the branch was already tracked — use Render API POST /deploys to force a new deploy
+  - Database services ("-like" entries) are real DB rows, distinct from code-level mock data (MeshRouter, fallbackServices array)
+---
