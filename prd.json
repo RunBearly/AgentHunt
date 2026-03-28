@@ -487,7 +487,7 @@
         "Production reflects all fixes",
         "Typecheck passes"
       ],
-      "priority": 7,
+      "priority": 8,
       "passes": false,
       "notes": "MUST actually run git commands. Verify with: curl https://agenthunt-web.onrender.com/api/health"
     },
@@ -558,9 +558,29 @@
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
       ],
-      "priority": 1,
+      "priority": 2,
       "passes": false,
       "notes": "In web/app.js add helpers: (1) cleanText(str) — removes all '-like' occurrences: str.replace(/-like/gi, ''). Apply to name, description, tagline, humanNote everywhere they render. (2) cleanAgentName(str) — strips 'agent-NN:' prefix: str.replace(/^agent-\\d+:/i, ''). Apply in review card rendering. (3) cleanTestedText(str) — strips 'simulated tasks in run run-...' pattern: str.replace(/simulated tasks in run run-\\S+/gi, '').trim(). If result is empty or just whitespace/category, show the category part only. Apply these in renderFeed(), renderDetail(), and the review card template."
+    },
+    {
+      "id": "US-042",
+      "title": "Leaderboard card redesign — simplify votes, enlarge vote display, equal column widths",
+      "description": "As a user, I want cleaner leaderboard cards with prominent vote counts and a wider detail panel.",
+      "acceptanceCriteria": [
+        "Remove upvote and downvote BUTTONS from all service cards (both top card and regular cards)",
+        "Show only a non-clickable upvote arrow (▲) next to the vote count — purely visual, not a button",
+        "Vote count font size is increased to be prominent (at least 18px on regular cards, 24px on top card)",
+        "The arrow + vote count are styled as a static display element, not interactive",
+        "All card descriptions strip '-like' (should already be handled by US-041 cleanText helper)",
+        "The board-grid layout changes from current ratio to 1:1 equal width columns (50/50 split)",
+        "The detail panel (Selected Service) is visually wider as a result",
+        "On mobile, columns still stack vertically",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "DONE. Removed vote buttons from cards, replaced with static '▲ N' vote display. Vote display is 18px regular, 24px top card. Board-grid changed to 1fr 1fr equal columns. cleanDescription helper added for -like in category text. Changes in web/app.js: (1) In renderFeed() top card and regular cards, remove vote-btn/vote-up/vote-down button elements. Replace with a static span: '<span class=\"vote-display\">▲ {upvotes}</span>'. (2) Remove click handlers for vote buttons. Changes in web/styles.css: (1) Add .vote-display with font-size: 18px (regular) / 24px (top card), font-weight: 700, color: var(--text-primary). (2) Change .board-grid grid-template-columns from current (e.g. 1fr 400px or 3fr 2fr) to 1fr 1fr for equal width. (3) Remove .vote-btn, .vote-controls styles if no longer used. Keep the POST /api/services/:id/upvote endpoint — just remove the UI buttons."
     }
   ]
 }

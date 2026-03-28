@@ -530,3 +530,14 @@
   - Keep backend recalcRanks() and frontend computeTrustScore() formulas in sync — they're in different files (repository.ts vs app.js)
   - Rank recalculation can be done externally via Supabase REST PATCH when code changes haven't been deployed yet
 ---
+
+## 2026-03-28 - US-042
+- What was implemented: Leaderboard card redesign — removed vote buttons, added static vote display, equal column widths
+- Files changed:
+  - `web/app.js` — removed vote button elements from top card and regular cards, replaced with static `<span class="vote-display">▲ N</span>`; removed vote click handler registration from renderFeed(); added cleanDescription() helper for -like in category descriptions
+  - `web/styles.css` — replaced .vote-controls, .vote-btn styles with .vote-display (18px regular, 24px top card); changed .board-grid from `1fr 400px` to `1fr 1fr` equal columns
+  - `prd.json` — marked US-042 as passes: true
+- **Learnings for future iterations:**
+  - Vote API endpoints (POST /api/services/:id/upvote) are kept even though UI buttons are removed — agents can still vote via MCP/API
+  - handleVote() function kept in app.js for potential future use but no longer called from UI
+---

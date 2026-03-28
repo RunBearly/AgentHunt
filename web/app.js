@@ -46,6 +46,14 @@ function cleanServiceName(name) {
   return (name ?? "").replace(/-like$/i, "");
 }
 
+function cleanDescription(service) {
+  const desc = service.description ?? "";
+  if (/-like in category/i.test(desc)) {
+    return service.tagline ?? "";
+  }
+  return desc;
+}
+
 function getFilteredServices() {
   if (state.activeFilter === "all") return services;
   return services.filter((s) => s.category === state.activeFilter);
@@ -176,7 +184,7 @@ function renderFeed() {
             </div>
             <div>
               <div class="top-service-name">${cleanServiceName(topService.name)}</div>
-              <div class="top-service-desc">${topService.tagline ?? topService.description ?? ""}</div>
+              <div class="top-service-desc">${cleanDescription(topService) || topService.tagline || ""}</div>
               <div class="top-service-tags">
                 ${(topService.capabilities ?? []).map((c) => `<span class="service-tag">${c}</span>`).join("")}
               </div>
@@ -189,12 +197,7 @@ function renderFeed() {
             <span class="trust-score-value">${computeTrustScore(topService).total}</span>
             <span class="trust-score-label">TRUST SCORE</span>
           </div>
-          <div class="vote-controls">
-            <button class="vote-btn vote-up" data-vote-id="${topService.id}" data-vote-dir="up" title="Upvote">\u25B2</button>
-            <span class="top-service-upvotes">${topService.upvotes ?? 0}</span>
-            <button class="vote-btn vote-down" data-vote-id="${topService.id}" data-vote-dir="down" title="Downvote">\u25BC</button>
-          </div>
-          <span style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">VOTES</span>
+          <span class="vote-display vote-display-lg">\u25B2 ${topService.upvotes ?? 0}</span>
         </div>
       </div>
     </article>
@@ -207,14 +210,10 @@ function renderFeed() {
         <span class="service-rank">#${service.rank ?? ""}</span>
         <span class="service-category">${(service.category ?? "").toUpperCase().replace(/-/g, " ")}</span>
         <span class="service-name">${cleanServiceName(service.name)}</span>
-        <span class="service-desc">${service.tagline ?? service.description ?? ""}</span>
+        <span class="service-desc">${cleanDescription(service) || service.tagline || ""}</span>
         <div class="service-right">
           <span class="service-trust-score">${computeTrustScore(service).total}</span>
-          <div class="vote-controls-inline">
-            <button class="vote-btn-sm vote-up" data-vote-id="${service.id}" data-vote-dir="up" title="Upvote">\u25B2</button>
-            <span class="service-upvotes">${service.upvotes ?? 0}</span>
-            <button class="vote-btn-sm vote-down" data-vote-id="${service.id}" data-vote-dir="down" title="Downvote">\u25BC</button>
-          </div>
+          <span class="vote-display">\u25B2 ${service.upvotes ?? 0}</span>
         </div>
       </article>
     `;
@@ -245,12 +244,6 @@ function renderFeed() {
     });
   });
 
-  serviceList.querySelectorAll("[data-vote-id]").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      handleVote(btn.dataset.voteId, btn.dataset.voteDir);
-    });
-  });
 }
 
 function renderDetail() {
@@ -292,7 +285,7 @@ function renderDetail() {
   detailTagline.textContent = service.tagline ?? "";
   const score = computeTrustScore(service);
   detailUpvotes.textContent = service.upvotes ?? 0;
-  detailDescription.textContent = service.description ?? "";
+  detailDescription.textContent = cleanDescription(service);
   detailHumanNote.textContent = getHumanTranslation(service);
   detailToolCount.textContent = service.toolCount ? `${service.toolCount} tools in schema` : "";
 
