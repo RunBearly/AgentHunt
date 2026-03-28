@@ -85,6 +85,13 @@ function formatEndpointBadge(service) {
   return `<span class="status-badge watch">[DEGRADED]</span>`;
 }
 
+function computeTrustScore(service) {
+  const reviewPart = Math.round((service.agentReviewScore ?? 0) * 10);
+  const invocationPart = service.verifiedInvocationCount ?? 0;
+  const votePart = service.upvotes ?? 0;
+  return { total: reviewPart + invocationPart + votePart, reviewPart, invocationPart, votePart };
+}
+
 function getHumanTranslation(service) {
   if (service.humanNote && service.humanNote !== service.description) {
     return service.humanNote;
@@ -178,6 +185,10 @@ function renderFeed() {
         </div>
         <div class="top-service-right">
           ${formatTrustBadge(topService)}
+          <div class="trust-score-display">
+            <span class="trust-score-value">${computeTrustScore(topService).total}</span>
+            <span class="trust-score-label">TRUST SCORE</span>
+          </div>
           <div class="vote-controls">
             <button class="vote-btn vote-up" data-vote-id="${topService.id}" data-vote-dir="up" title="Upvote">\u25B2</button>
             <span class="top-service-upvotes">${topService.upvotes ?? 0}</span>
@@ -198,6 +209,7 @@ function renderFeed() {
         <span class="service-name">${cleanServiceName(service.name)}</span>
         <span class="service-desc">${service.tagline ?? service.description ?? ""}</span>
         <div class="service-right">
+          <span class="service-trust-score">${computeTrustScore(service).total}</span>
           <div class="vote-controls-inline">
             <button class="vote-btn-sm vote-up" data-vote-id="${service.id}" data-vote-dir="up" title="Upvote">\u25B2</button>
             <span class="service-upvotes">${service.upvotes ?? 0}</span>
@@ -278,6 +290,7 @@ function renderDetail() {
   detailRank.textContent = service.rank ? `#${service.rank}` : "";
   detailName.textContent = cleanServiceName(service.name);
   detailTagline.textContent = service.tagline ?? "";
+  const score = computeTrustScore(service);
   detailUpvotes.textContent = service.upvotes ?? 0;
   detailDescription.textContent = service.description ?? "";
   detailHumanNote.textContent = getHumanTranslation(service);
@@ -294,6 +307,7 @@ function renderDetail() {
   if (service.reviewedByAgent) metaPills.push(`<span class="meta-pill">REVIEWED BY ${service.reviewedByAgent.toUpperCase()}</span>`);
   if (service.agentReviewScore != null) metaPills.push(`<span class="meta-pill">${service.agentReviewScore.toFixed(1)}/5</span>`);
   metaPills.push(`<span class="meta-pill trust-badge trust-${trustLabel}">[${trustLabel.toUpperCase().replace(/-/g, " ")}]</span>`);
+  metaPills.push(`<span class="meta-pill accent-pill">TRUST SCORE: ${score.total} = reviews(${score.reviewPart}) + invocations(${score.invocationPart}) + votes(${score.votePart})</span>`);
   detailMeta.innerHTML = metaPills.join("");
 
   const infoPairs = [
