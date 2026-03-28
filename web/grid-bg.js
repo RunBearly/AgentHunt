@@ -10,6 +10,9 @@
   let dots = [];
   let mouse = { x: -9999, y: -9999, active: false };
   let smoothMouse = { x: -9999, y: -9999 };
+  let mouseSpeed = 0;
+  let prevMouse = { x: -9999, y: -9999 };
+  let smoothRadius = 120;
 
   function resize() {
     w = canvas.width = window.innerWidth;
@@ -41,10 +44,10 @@
       const dist = dd(px, py, d.x, d.y);
       if (dist < d.r) val += (1 - dist / d.r) * 0.45;
     }
-    // Mouse glow — follows with delay
+    // Mouse glow — radius scales with movement speed
     if (mouse.active) {
       const dist = dd(px, py, smoothMouse.x, smoothMouse.y);
-      const mr = 250;
+      const mr = smoothRadius;
       if (dist < mr) val += (1 - dist / mr) * 0.8;
     }
     return Math.min(val, 1);
@@ -58,6 +61,13 @@
     const lerp = 0.06;
     smoothMouse.x += (mouse.x - smoothMouse.x) * lerp;
     smoothMouse.y += (mouse.y - smoothMouse.y) * lerp;
+
+    // Track mouse speed → drive glow radius
+    mouseSpeed = dd(mouse.x, mouse.y, prevMouse.x, prevMouse.y);
+    prevMouse.x = mouse.x;
+    prevMouse.y = mouse.y;
+    const targetRadius = Math.min(320, 80 + mouseSpeed * 8);
+    smoothRadius += (targetRadius - smoothRadius) * 0.04;
 
     for (const d of dots) {
       d.x += d.vx;
