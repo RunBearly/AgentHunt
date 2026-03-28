@@ -326,3 +326,13 @@
   - Render build cache can serve stale static files even after a deploy — use `{"clearCache":"clear"}` in the POST /deploys body to force a clean build
   - Check file sizes (local vs production) as a quick way to detect stale deployments
 ---
+
+## 2026-03-28 - US-026
+- What was implemented: Fixed reviews not showing in web UI by fetching full service detail (with reviews from service_reviews table) on card click and initial load
+- Files changed:
+  - `web/app.js` — added `fetchServiceDetail()` function that calls GET /api/services/:id and merges the response (including real reviews) into the services array; called on card click and for the initially selected service after hydration
+- **Learnings for future iterations:**
+  - `listServices()` returns raw payload from the services table which has `reviews: []` — only `getService()` calls `decorateWithCounts()` which JOINs the service_reviews table
+  - Option 2 (fetch detail on demand) is better than decorating all services in listServices — avoids N+1 queries on the listing endpoint
+  - The detail fetch merges into the existing service object with spread, so cached detail persists across re-renders until a full page reload
+---

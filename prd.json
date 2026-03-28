@@ -276,7 +276,7 @@
         "Web UI at / renders redesigned command-center layout with Top Service highlight",
         "Typecheck passes"
       ],
-      "priority": 19,
+      "priority": 20,
       "passes": false,
       "notes": "Verified 2026-03-28: all 7 endpoints confirmed with real data. Deploy dep-d744905ipkoc738e1650 live."
     },
@@ -293,7 +293,7 @@
         "Take a screenshot via agent-browser snapshot to confirm the message was posted",
         "Typecheck passes"
       ],
-      "priority": 20,
+      "priority": 21,
       "passes": false,
       "notes": "MUST use agent-browser CLI for Discord posting — do NOT skip this. Full procedure in .omx/plans/browser-session-runbook.md. Commands: (1) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal (2) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=password --reveal (3) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp (4) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open https://discord.com/channels/@me (5) Login with credentials, MFA with OTP (6) Navigate to live-and-updates channel (7) Type and send message (8) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser snapshot -c -d 8 to confirm."
     },
@@ -309,8 +309,8 @@
         "Typecheck passes",
         "Tests pass"
       ],
-      "priority": 13,
-      "passes": false,
+      "priority": 14,
+      "passes": true,
       "notes": "Root cause: listServices() in src/db/repository.ts (line 79) returns payload as-is from the services table. The payload has reviews:[] because submitService stores an empty array. Only getService() calls decorateWithCounts() which JOINs service_reviews. Fix options: (1) make listServices also call decorateWithCounts for each service, or (2) change the web UI to fetch /api/services/:id when selecting a service for detail view (more efficient). Option 2 is better — add a fetch call in renderDetail() or on card click that hits GET /api/services/{id} and uses the full response. The /api/services/:id endpoint already returns correct reviews via decorateWithCounts()."
     },
     {
@@ -323,9 +323,30 @@
         "Typecheck passes",
         "Tests pass"
       ],
-      "priority": 14,
+      "priority": 15,
       "passes": false,
       "notes": "In src/db/repository.ts listServices() line 79: ORDER BY (payload->>'rank')::int may fail if rank is null or not a number. Fix: use COALESCE((payload->>'rank')::int, 999) or ORDER BY payload->>'rank' as text. Also check if searchServices text matching works correctly for all fields — the spread of empty arrays is fine but verify with a test."
+    },
+    {
+      "id": "US-028",
+      "title": "Auto-update service rank, upvotes, and review scores when reviews or invocations are recorded",
+      "description": "As a user, I want service rank, upvotes, agentReviewScore, and endpointStatus to update automatically whenever a review is submitted or a verified invocation is recorded.",
+      "acceptanceCriteria": [
+        "When submitReview is called, the service payload in DB is updated: agentReviewScore = average of all review scores, reviewedByAgent = latest reviewer agent name, testedByReviewBot = true",
+        "When submitReview is called, upvotes is incremented by 1",
+        "When recordVerifiedInvocation is called with success=true, upvotes is incremented by 1",
+        "When recordVerifiedInvocation is called, endpointStatus is updated to 'Live' if success=true, or 'Degraded' if success=false",
+        "When recordVerifiedInvocation is called, successRate is recalculated from all invocations (successful / total * 100)",
+        "When recordVerifiedInvocation is called, latencyMs is updated to the average of all invocation latencies",
+        "Rank is recalculated for ALL services after any review or invocation: rank = position when sorted by (agentReviewScore * 10 + verifiedInvocationCount + upvotes) descending, starting at 1",
+        "The updated payload is written back to the services table immediately (not just on next read)",
+        "GET /api/services reflects the updated rank, upvotes, scores, and status without restart",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": "Key changes in src/db/repository.ts: (1) submitReview() — after inserting into service_reviews, query all reviews for that service, compute avg score, update the service payload with new agentReviewScore, reviewedByAgent, testedByReviewBot=true, upvotes+1. (2) recordVerifiedInvocation() — after inserting into verified_invocations, query success count/total/avg latency, update service payload with successRate, latencyMs, endpointStatus, upvotes+1. (3) Add a recalcRanks() method that queries all services, sorts by composite score, and updates rank field in each payload. Call recalcRanks() at the end of both submitReview and recordVerifiedInvocation. Use UPDATE services SET payload = jsonb_set(payload, ...) or just re-write the full payload."
     }
   ]
 }
