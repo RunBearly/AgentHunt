@@ -122,3 +122,22 @@
 - **Learnings for future iterations:**
   - Render service slugs include the service type suffix (e.g., `-web`) — always verify the actual deployed URL rather than assuming the slug matches the service name
 ---
+
+## 2026-03-28 - US-011
+- What was implemented: Drafted and posted Discord launch announcement to the 🎥-live-and-updates channel in the "Ralphthon by Team Attention" server
+- Actions taken:
+  - Opened Discord via agent-browser (session was already authenticated)
+  - Identified hackathon server "Ralphthon by Team Attention" via JS query of guild nav items
+  - Navigated to 🎥-live-and-updates channel (channel ID 1485922789021188176)
+  - Composed and posted announcement including: product name, one-line description, production URL, MCP endpoint URL, llms.txt URL
+  - Message posted by user "thefron" and verified visible in channel
+- Files changed:
+  - `prd.json` — marked US-011 as passes: true
+  - `progress.txt` — appended US-011 progress entry
+- **Learnings for future iterations:**
+  - Discord's message editor uses a Slate-based contenteditable div, not a standard textbox — use `document.execCommand('insertText', false, text)` to insert text
+  - `agent-browser keyboard inserttext` fails on text with special characters — use `eval` with `execCommand` instead
+  - Discord server list can be queried via `document.querySelectorAll('[data-list-item-id]')` filtered by `guildsnav` prefix to get server IDs and names
+  - Channel list uses `channels___` prefix on `data-list-item-id` attributes
+  - Session persistence works well — no re-login needed if the browser session was previously authenticated
+---
