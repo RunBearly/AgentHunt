@@ -230,7 +230,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 14,
-      "passes": false,
+      "passes": true,
       "notes": "The responsive screenshot at 375px shows cards with horizontal overflow and detail panel not visible. Fix in web/styles.css — adjust grid layout, card widths, and detail panel positioning for small screens."
     },
     {

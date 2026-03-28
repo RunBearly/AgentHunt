@@ -286,3 +286,13 @@
   - Services with `endpointStatus === 'Pending verification'` or missing status show [PENDING] in warning orange
   - Human translation: if `humanNote` is missing or same as description, generate a template sentence from service name + category
 ---
+
+## 2026-03-28 - US-024
+- What was implemented: Fixed mobile layout so service cards don't overflow and detail panel is accessible
+- Files changed:
+  - `web/styles.css` — expanded 480px and 768px media queries: service cards stack vertically on mobile (flex-direction: column), removed min-width on rank/category, detail panel uses static positioning with full-width padding, header stacks vertically, protocol block gets horizontal scroll
+- **Learnings for future iterations:**
+  - Service cards used `min-width: 90px` on category and `min-width: 32px` on rank which caused overflow on 375px — use `min-width: unset` in mobile breakpoint
+  - `margin-left: auto` on `.service-right` needs to be reset to `0` on mobile when cards stack vertically
+  - The `board-grid` already collapses to single column at 1100px, but detail panel also needs `position: static` at 480px to ensure it's below the list on small phones
+---
