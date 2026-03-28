@@ -86,9 +86,9 @@ function formatEndpointBadge(service) {
 }
 
 function computeTrustScore(service) {
-  const reviewPart = Math.round((service.agentReviewScore ?? 0) * 10);
+  const reviewPart = Math.round((service.agentReviewScore ?? 0) * 5);
   const invocationPart = service.verifiedInvocationCount ?? 0;
-  const votePart = service.upvotes ?? 0;
+  const votePart = (service.upvotes ?? 0) * 3;
   return { total: reviewPart + invocationPart + votePart, reviewPart, invocationPart, votePart };
 }
 

@@ -541,8 +541,8 @@
         "Tests pass"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": "In src/db/repository.ts recalcRanks() line ~296: change from (agentReviewScore || 0) * 10 + (verifiedInvocationCount || 0) + (upvotes || 0) to (agentReviewScore || 0) * 5 + (verifiedInvocationCount || 0) + (upvotes || 0) * 3. Also update web/app.js if US-038 added a frontend computeTrustScore. After code change, need to trigger recalcRanks — easiest way is to add a one-time call in init() or POST a dummy review/invocation. Also update via Supabase management API: run recalc query directly."
+      "passes": true,
+      "notes": "DONE. Updated formula in both repository.ts and app.js. Recalculated 71 service ranks via Supabase REST API. Top services now reflect upvote weight: todoist(53 upvotes)=#1, otter(46)=#2, asana(50)=#3. In src/db/repository.ts recalcRanks() line ~296: change from (agentReviewScore || 0) * 10 + (verifiedInvocationCount || 0) + (upvotes || 0) to (agentReviewScore || 0) * 5 + (verifiedInvocationCount || 0) + (upvotes || 0) * 3. Also update web/app.js if US-038 added a frontend computeTrustScore. After code change, need to trigger recalcRanks — easiest way is to add a one-time call in init() or POST a dummy review/invocation. Also update via Supabase management API: run recalc query directly."
     },
     {
       "id": "US-041",

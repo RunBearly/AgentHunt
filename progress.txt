@@ -517,3 +517,16 @@
   - OpenAI gpt-4o-mini handles 178 sequential calls without rate limiting at ~1 req/sec
   - Python urllib output is line-buffered when piped — run directly (not piped to head) to see real-time progress
 ---
+
+## 2026-03-28 - US-040
+- What was implemented: Changed composite trust score formula to weight upvotes ×3 and reviews ×5 (was ×1 and ×10)
+- Files changed:
+  - `src/db/repository.ts` — updated recalcRanks() formula: `(agentReviewScore * 5) + verifiedInvocationCount + (upvotes * 3)`
+  - `web/app.js` — updated computeTrustScore() to match: reviewPart uses ×5, votePart uses ×3
+  - `prd.json` — marked US-040 as passes: true
+- Rank recalculation: ran Python script to recalculate all 85 services via Supabase REST API, 71 ranks changed
+- Top 3 after recalc: #1 todoist (score=196, 53 upvotes), #2 otter (score=186, 46 upvotes), #3 asana (score=184, 50 upvotes)
+- **Learnings for future iterations:**
+  - Keep backend recalcRanks() and frontend computeTrustScore() formulas in sync — they're in different files (repository.ts vs app.js)
+  - Rank recalculation can be done externally via Supabase REST PATCH when code changes haven't been deployed yet
+---

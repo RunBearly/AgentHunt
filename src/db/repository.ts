@@ -293,8 +293,8 @@ export class AgentHuntRepository {
 
     // Sort by composite score descending
     services.sort((a, b) => {
-      const scoreA = (a.payload.agentReviewScore || 0) * 10 + (a.payload.verifiedInvocationCount || 0) + (a.payload.upvotes || 0);
-      const scoreB = (b.payload.agentReviewScore || 0) * 10 + (b.payload.verifiedInvocationCount || 0) + (b.payload.upvotes || 0);
+      const scoreA = (a.payload.agentReviewScore || 0) * 5 + (a.payload.verifiedInvocationCount || 0) + (a.payload.upvotes || 0) * 3;
+      const scoreB = (b.payload.agentReviewScore || 0) * 5 + (b.payload.verifiedInvocationCount || 0) + (b.payload.upvotes || 0) * 3;
       return scoreB - scoreA;
     });
 
