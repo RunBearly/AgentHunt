@@ -439,6 +439,8 @@ a {
 .detail-panel {
   position: sticky;
   top: 60px;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
 }
 
 .detail-surface {
@@ -802,6 +804,8 @@ a {
 
   .detail-panel {
     position: static;
+    max-height: none;
+    overflow-y: visible;
   }
 }
 
