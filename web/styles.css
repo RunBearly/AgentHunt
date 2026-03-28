@@ -754,18 +754,123 @@ a {
   color: var(--text-secondary);
 }
 
-/* ── Protocol block ── */
-.protocol-block {
+/* ── MCP Connect Guide ── */
+.mcp-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mcp-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.mcp-step-num {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.mcp-step-title {
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.mcp-code-inline {
+  display: inline-block;
   background: var(--bg-page);
   border: 1px solid var(--border);
-  border-radius: 0;
-  padding: 16px;
+  padding: 4px 8px;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  color: var(--accent);
+  word-break: break-all;
+}
+
+.mcp-clients {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mcp-client {
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+}
+
+.mcp-client-name {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.mcp-code {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
   color: var(--accent);
   white-space: pre-wrap;
-  word-break: break-word;
+  word-break: break-all;
   line-height: 1.5;
+  margin: 0;
+}
+
+.mcp-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mcp-tool-tag {
+  display: inline-block;
+  padding: 3px 8px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--accent);
+}
+
+.mcp-more {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  align-self: center;
+}
+
+.mcp-usage {
+  font-style: italic;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.mcp-meta-row {
+  display: flex;
+  gap: 20px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.mcp-meta-row strong {
+  color: var(--text-secondary);
 }
 
 /* ── Review cards ── */
