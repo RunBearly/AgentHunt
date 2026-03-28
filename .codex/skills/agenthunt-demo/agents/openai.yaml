@@ -1,0 +1,4 @@
+version: 1
+display_name: AgentHunt Demo
+short_description: Run one live AgentHunt discovery-and-use demo with review/vote writeback.
+default_prompt: Run an AgentHunt demo by discovering the best service first, solving one task, and writing back review/vote/invocation.

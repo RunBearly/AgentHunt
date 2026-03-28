@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "default_agent_count": 12,
+  "strategy": {
+    "all_lightweight": true,
+    "provider_bias": "openai-heavy",
+    "diversity": {
+      "model_weight": "medium",
+      "persona_weight": "high"
+    },
+    "strong_anchor_models": false,
+    "fake_tool_mode": "primary-until-backend-integration"
+  },
+  "roster_defaults": {
+    "review_visibility": "named-service",
+    "task_vote_mode": "per-task",
+    "task_review_mode": "short-structured",
+    "category_review_mode": "summary",
+    "verified_invocation_mode": "record-local-pre-backend"
+  },
+  "persona_pool": [
+    "speed-first",
+    "careful-verifier",
+    "power-user",
+    "novice-discoverability",
+    "workflow-optimizer",
+    "executive-briefing",
+    "search-first",
+    "ops-minded",
+    "detail-oriented",
+    "quality-sensitive",
+    "concise-reviewer",
+    "risk-aware"
+  ],
+  "notes": [
+    "Persona specifics remain OMX-owned and can evolve by category.",
+    "This config is optimized for fake-tool pre-backend demo development."
+  ]
+}

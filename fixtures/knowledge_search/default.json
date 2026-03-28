@@ -1,0 +1,32 @@
+{
+  "bundle_id": "knowledge-search-default-v1",
+  "category_id": "knowledge_search",
+  "description": "Synthetic knowledge corpus for retrieval and synthesis tasks.",
+  "sources": [
+    {
+      "id": "src-001",
+      "title": "Launch FAQ",
+      "snippet": "Launch depends on stable analytics retries and FAQ publication."
+    },
+    {
+      "id": "src-002",
+      "title": "Search Quality Notes",
+      "snippet": "Precision improved, but recall drops for long multi-topic queries."
+    },
+    {
+      "id": "src-003",
+      "title": "Customer Interview Summary",
+      "snippet": "Admins value audit visibility but struggle with onboarding complexity."
+    },
+    {
+      "id": "src-004",
+      "title": "Engineering Decision Log",
+      "snippet": "Checkpointed retries were chosen over aggressive parallel retries."
+    },
+    {
+      "id": "src-005",
+      "title": "Sales Narrative Draft",
+      "snippet": "Lead with trust, rollout speed, and admin visibility in demos."
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "id": "crm_sales",
+  "display_name": "CRM / Sales",
+  "status": "demo-supported",
+  "description": "Account lookup, pipeline updates, follow-up planning, and sales recap workflows.",
+  "design_rules": [
+    "Tasks must stay vendor-neutral within the category.",
+    "Tasks should be short enough for high sample count and repeated simulation.",
+    "Fake tools should preserve differentiated product logic, not just naming differences."
+  ],
+  "core_tasks": [
+    {
+      "id": "CRM-01",
+      "title": "Lookup account context",
+      "goal": "Retrieve account, contact, and recent activity context.",
+      "scored": true
+    },
+    {
+      "id": "CRM-02",
+      "title": "Update opportunity stage",
+      "goal": "Move a deal/opportunity to a new stage with rationale.",
+      "scored": true
+    },
+    {
+      "id": "CRM-03",
+      "title": "Summarize pipeline risk",
+      "goal": "Summarize risky deals and likely blockers.",
+      "scored": true
+    },
+    {
+      "id": "CRM-04",
+      "title": "Extract next sales actions",
+      "goal": "Identify follow-ups, owners, and due dates.",
+      "scored": true
+    },
+    {
+      "id": "CRM-05",
+      "title": "Compare account history",
+      "goal": "Compare recent interactions across accounts or opportunities.",
+      "scored": true
+    },
+    {
+      "id": "CRM-06",
+      "title": "Prepare account recap",
+      "goal": "Generate an executive account recap.",
+      "scored": true
+    }
+  ],
+  "reserve_tasks": [
+    {
+      "id": "CRM-R1",
+      "title": "Draft follow-up email",
+      "goal": "Draft a follow-up using CRM context.",
+      "scored": false
+    },
+    {
+      "id": "CRM-R2",
+      "title": "Prioritize accounts",
+      "goal": "Rank accounts by urgency or opportunity value.",
+      "scored": false
+    }
+  ],
+  "explicit_exclusions": [
+    "Admin-level CRM schema config",
+    "Forecast governance workflows as hard requirements"
+  ],
+  "fixture_bundle": "fixtures/crm_sales/default.json",
+  "task_fixture_focus": {
+    "CRM-01": "account_lookup",
+    "CRM-02": "stage_update",
+    "CRM-03": "pipeline_risk",
+    "CRM-04": "next_actions",
+    "CRM-05": "history_compare",
+    "CRM-06": "account_recap"
+  }
+}

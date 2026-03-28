@@ -1,0 +1,45 @@
+{
+  "selected_primary_comparison_category": "meeting_intelligence",
+  "selected_reliable_fallback_category": "spreadsheet",
+  "candidate_categories": [
+    "meeting_intelligence",
+    "notes_docs",
+    "spreadsheet",
+    "calendar",
+    "tasks_workflow"
+  ],
+  "selection_reason": "Meeting intelligence maximizes comparable fake/demo tool density; spreadsheet remains the clean fallback for reliable task execution.",
+  "scores": {
+    "meeting_intelligence": {
+      "tool_density": 10,
+      "review_richness": 10,
+      "demo_story": 10,
+      "runtime_safety": 6
+    },
+    "notes_docs": {
+      "tool_density": 8,
+      "review_richness": 9,
+      "demo_story": 8,
+      "runtime_safety": 7
+    },
+    "spreadsheet": {
+      "tool_density": 8,
+      "review_richness": 6,
+      "demo_story": 7,
+      "runtime_safety": 9
+    },
+    "calendar": {
+      "tool_density": 8,
+      "review_richness": 6,
+      "demo_story": 7,
+      "runtime_safety": 8
+    },
+    "tasks_workflow": {
+      "tool_density": 8,
+      "review_richness": 7,
+      "demo_story": 7,
+      "runtime_safety": 8
+    }
+  },
+  "review_status": "pre-backend-demo-default"
+}

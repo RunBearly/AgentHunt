@@ -1,0 +1,85 @@
+{
+  "bundle_id": "spreadsheet-default-v1",
+  "category_id": "spreadsheet",
+  "description": "Synthetic workbook-like data for spreadsheet CRUD, compare, and transform tasks.",
+  "workbooks": [
+    {
+      "id": "wb-001",
+      "name": "pipeline_metrics",
+      "sheets": {
+        "opportunities": [
+          {
+            "account": "Acme",
+            "stage": "Proposal",
+            "amount": 120000,
+            "owner": "Ivy"
+          },
+          {
+            "account": "Beacon",
+            "stage": "Discovery",
+            "amount": 45000,
+            "owner": "Jon"
+          },
+          {
+            "account": "Cinder",
+            "stage": "Negotiation",
+            "amount": 98000,
+            "owner": "Kira"
+          }
+        ],
+        "forecast": [
+          {
+            "month": "April",
+            "target": 250000,
+            "committed": 180000
+          },
+          {
+            "month": "May",
+            "target": 300000,
+            "committed": 225000
+          }
+        ]
+      }
+    },
+    {
+      "id": "wb-002",
+      "name": "support_backlog",
+      "sheets": {
+        "tickets": [
+          {
+            "ticket_id": "SUP-101",
+            "priority": "high",
+            "status": "open",
+            "owner": "Ava"
+          },
+          {
+            "ticket_id": "SUP-102",
+            "priority": "medium",
+            "status": "in_progress",
+            "owner": "Ben"
+          },
+          {
+            "ticket_id": "SUP-103",
+            "priority": "high",
+            "status": "open",
+            "owner": "Chloe"
+          }
+        ],
+        "sla": [
+          {
+            "priority": "high",
+            "hours": 4
+          },
+          {
+            "priority": "medium",
+            "hours": 24
+          },
+          {
+            "priority": "low",
+            "hours": 72
+          }
+        ]
+      }
+    }
+  ]
+}

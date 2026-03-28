@@ -1,0 +1,127 @@
+{
+  "bundle_id": "meeting-intelligence-default-v1",
+  "category_id": "meeting_intelligence",
+  "description": "Synthetic meeting corpus for transcript, summary, action-item, and cross-meeting insight tasks.",
+  "meetings": [
+    {
+      "id": "meet-001",
+      "title": "Q2 Roadmap Review",
+      "date": "2026-03-24",
+      "participants": [
+        "Ava",
+        "Ben",
+        "Chloe"
+      ],
+      "summary": "Reviewed roadmap priorities, flagged analytics migration risk, and aligned on mobile onboarding milestones.",
+      "action_items": [
+        {
+          "owner": "Ava",
+          "task": "Draft revised onboarding milestone plan"
+        },
+        {
+          "owner": "Ben",
+          "task": "Validate analytics migration risk register"
+        }
+      ],
+      "transcript_snippets": [
+        "Ava: We should not ship onboarding before the analytics migration risk is understood.",
+        "Chloe: Mobile onboarding can still proceed if we decouple the event pipeline."
+      ],
+      "themes": [
+        "analytics migration",
+        "mobile onboarding",
+        "roadmap risk"
+      ]
+    },
+    {
+      "id": "meet-002",
+      "title": "Customer Feedback Sync",
+      "date": "2026-03-25",
+      "participants": [
+        "Dina",
+        "Evan",
+        "Farah"
+      ],
+      "summary": "Summarized enterprise feedback around reporting speed, audit logs, and search precision.",
+      "action_items": [
+        {
+          "owner": "Dina",
+          "task": "Cluster reporting complaints by segment"
+        },
+        {
+          "owner": "Farah",
+          "task": "Prototype improved search filters"
+        }
+      ],
+      "transcript_snippets": [
+        "Evan: Reporting speed is still the biggest blocker for enterprise admins.",
+        "Farah: Search feels close, but precision drops when customers query across multiple workspaces."
+      ],
+      "themes": [
+        "reporting speed",
+        "audit logs",
+        "search precision"
+      ]
+    },
+    {
+      "id": "meet-003",
+      "title": "Weekly Product Standup",
+      "date": "2026-03-26",
+      "participants": [
+        "Ava",
+        "Dina",
+        "Hiro"
+      ],
+      "summary": "Shared launch blockers, discussed flaky integrations, and reviewed experiment readouts.",
+      "action_items": [
+        {
+          "owner": "Hiro",
+          "task": "Stabilize integration retry policy"
+        },
+        {
+          "owner": "Ava",
+          "task": "Prepare experiment readout for leadership"
+        }
+      ],
+      "transcript_snippets": [
+        "Hiro: Our biggest blocker is still flaky third-party retries.",
+        "Dina: We need a cleaner summary of experiment wins before the launch review."
+      ],
+      "themes": [
+        "integration reliability",
+        "experiments",
+        "launch blockers"
+      ]
+    },
+    {
+      "id": "meet-004",
+      "title": "Sales Enablement Review",
+      "date": "2026-03-27",
+      "participants": [
+        "Ivy",
+        "Jon",
+        "Kira"
+      ],
+      "summary": "Reviewed objections from prospects, discussed pricing confusion, and planned a refreshed demo narrative.",
+      "action_items": [
+        {
+          "owner": "Ivy",
+          "task": "Revise pricing objection FAQ"
+        },
+        {
+          "owner": "Kira",
+          "task": "Update demo narrative deck"
+        }
+      ],
+      "transcript_snippets": [
+        "Jon: Prospects keep asking whether the audit layer is included in the base plan.",
+        "Kira: The demo narrative needs to lead with admin trust and rollout speed."
+      ],
+      "themes": [
+        "pricing objections",
+        "demo narrative",
+        "sales enablement"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "id": "spreadsheet",
+  "display_name": "Spreadsheet / Excel",
+  "status": "demo-supported",
+  "description": "Vendor-neutral spreadsheet and tabular workflows spanning sheets, workbooks, and structured tables.",
+  "design_rules": [
+    "Tasks must stay vendor-neutral within the category.",
+    "Tasks should be short enough for high sample count and repeated simulation.",
+    "Fake tools should preserve differentiated product logic, not just naming differences."
+  ],
+  "core_tasks": [
+    {
+      "id": "SHEET-01",
+      "title": "Read a rectangular range",
+      "goal": "Read values from a specified range in structured form.",
+      "scored": true
+    },
+    {
+      "id": "SHEET-02",
+      "title": "Write a new table",
+      "goal": "Create or write a new table/sheet region.",
+      "scored": true
+    },
+    {
+      "id": "SHEET-03",
+      "title": "Append rows",
+      "goal": "Append rows safely without corrupting data.",
+      "scored": true
+    },
+    {
+      "id": "SHEET-04",
+      "title": "Find and update by key",
+      "goal": "Locate a record by key and update a target field.",
+      "scored": true
+    },
+    {
+      "id": "SHEET-05",
+      "title": "Filter and summarize",
+      "goal": "Filter rows by condition and summarize the result.",
+      "scored": true
+    },
+    {
+      "id": "SHEET-06",
+      "title": "Compare ranges or sheets",
+      "goal": "Find and summarize differences between two ranges/sheets.",
+      "scored": true
+    }
+  ],
+  "reserve_tasks": [
+    {
+      "id": "SHEET-R1",
+      "title": "Sort and deduplicate",
+      "goal": "Sort rows and remove duplicates.",
+      "scored": false
+    },
+    {
+      "id": "SHEET-R2",
+      "title": "Add a computed column",
+      "goal": "Add a simple computed field.",
+      "scored": false
+    }
+  ],
+  "explicit_exclusions": [
+    "Macros or VBA/App Script-only flows",
+    "Pivot tables as required features",
+    "Chart generation as a hard requirement"
+  ],
+  "fixture_bundle": "fixtures/spreadsheet/default.json",
+  "task_fixture_focus": {
+    "SHEET-01": "range_read",
+    "SHEET-02": "table_write",
+    "SHEET-03": "row_append",
+    "SHEET-04": "key_update",
+    "SHEET-05": "filter_summary",
+    "SHEET-06": "sheet_compare"
+  }
+}

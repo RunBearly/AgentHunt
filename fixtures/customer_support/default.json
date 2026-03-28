@@ -1,0 +1,49 @@
+{
+  "bundle_id": "customer-support-default-v1",
+  "category_id": "customer_support",
+  "description": "Synthetic support tickets and KB articles for support tasks.",
+  "tickets": [
+    {
+      "id": "SUP-201",
+      "issue": "Reporting latency",
+      "status": "open",
+      "priority": "high",
+      "owner": "Ava"
+    },
+    {
+      "id": "SUP-202",
+      "issue": "Search precision mismatch",
+      "status": "in_progress",
+      "priority": "medium",
+      "owner": "Ben"
+    },
+    {
+      "id": "SUP-203",
+      "issue": "Audit export question",
+      "status": "open",
+      "priority": "low",
+      "owner": "Chloe"
+    },
+    {
+      "id": "SUP-204",
+      "issue": "Retry backoff failure",
+      "status": "escalated",
+      "priority": "high",
+      "owner": "Hiro"
+    }
+  ],
+  "kb_articles": [
+    {
+      "id": "KB-001",
+      "title": "Troubleshooting slow reports"
+    },
+    {
+      "id": "KB-002",
+      "title": "Understanding audit exports"
+    },
+    {
+      "id": "KB-003",
+      "title": "Search filtering best practices"
+    }
+  ]
+}

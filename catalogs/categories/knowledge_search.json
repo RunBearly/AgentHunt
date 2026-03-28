@@ -1,0 +1,76 @@
+{
+  "id": "knowledge_search",
+  "display_name": "Knowledge Search",
+  "status": "demo-supported",
+  "description": "Knowledge retrieval, evidence lookup, synthesis, and answer grounding workflows.",
+  "design_rules": [
+    "Tasks must stay vendor-neutral within the category.",
+    "Tasks should be short enough for high sample count and repeated simulation.",
+    "Fake tools should preserve differentiated product logic, not just naming differences."
+  ],
+  "core_tasks": [
+    {
+      "id": "KNOW-01",
+      "title": "Find relevant knowledge",
+      "goal": "Retrieve the most relevant docs or notes for a query.",
+      "scored": true
+    },
+    {
+      "id": "KNOW-02",
+      "title": "Quote supporting evidence",
+      "goal": "Return supporting snippets or citations.",
+      "scored": true
+    },
+    {
+      "id": "KNOW-03",
+      "title": "Synthesize an answer",
+      "goal": "Answer a question using multiple knowledge sources.",
+      "scored": true
+    },
+    {
+      "id": "KNOW-04",
+      "title": "Compare conflicting sources",
+      "goal": "Explain differences or tensions across sources.",
+      "scored": true
+    },
+    {
+      "id": "KNOW-05",
+      "title": "Identify missing context",
+      "goal": "Point out what is still unknown or underspecified.",
+      "scored": true
+    },
+    {
+      "id": "KNOW-06",
+      "title": "Recap search usefulness",
+      "goal": "Summarize usefulness, confidence, and gaps.",
+      "scored": true
+    }
+  ],
+  "reserve_tasks": [
+    {
+      "id": "KNOW-R1",
+      "title": "Topic clustering",
+      "goal": "Cluster documents by topic.",
+      "scored": false
+    },
+    {
+      "id": "KNOW-R2",
+      "title": "Freshness check",
+      "goal": "Identify stale versus current docs.",
+      "scored": false
+    }
+  ],
+  "explicit_exclusions": [
+    "Search engine admin tuning",
+    "Index schema management as required tasks"
+  ],
+  "fixture_bundle": "fixtures/knowledge_search/default.json",
+  "task_fixture_focus": {
+    "KNOW-01": "retrieval",
+    "KNOW-02": "evidence",
+    "KNOW-03": "synthesis",
+    "KNOW-04": "compare_sources",
+    "KNOW-05": "gap_detection",
+    "KNOW-06": "search_recap"
+  }
+}

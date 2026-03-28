@@ -1,0 +1,50 @@
+{
+  "bundle_id": "tasks-workflow-default-v1",
+  "category_id": "tasks_workflow",
+  "description": "Synthetic task/project board data for workflow operations.",
+  "tasks": [
+    {
+      "id": "tsk-001",
+      "title": "Fix retry backoff bug",
+      "status": "in_progress",
+      "priority": "high",
+      "owner": "Hiro",
+      "labels": [
+        "backend",
+        "reliability"
+      ]
+    },
+    {
+      "id": "tsk-002",
+      "title": "Draft launch FAQ",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "Ava",
+      "labels": [
+        "launch",
+        "docs"
+      ]
+    },
+    {
+      "id": "tsk-003",
+      "title": "Review customer interview notes",
+      "status": "blocked",
+      "priority": "medium",
+      "owner": "Dina",
+      "labels": [
+        "research"
+      ]
+    },
+    {
+      "id": "tsk-004",
+      "title": "Tune scoring thresholds",
+      "status": "done",
+      "priority": "low",
+      "owner": "Ben",
+      "labels": [
+        "evaluation",
+        "quality"
+      ]
+    }
+  ]
+}

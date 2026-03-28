@@ -1,0 +1,43 @@
+{
+  "bundle_id": "notes-docs-default-v1",
+  "category_id": "notes_docs",
+  "description": "Synthetic notes/docs corpus for creation, editing, retrieval, and summarization tasks.",
+  "documents": [
+    {
+      "id": "doc-001",
+      "title": "Launch Checklist",
+      "content": "Finalize copy, verify analytics events, confirm support handoff, and publish FAQ before launch day.",
+      "tags": [
+        "launch",
+        "ops"
+      ]
+    },
+    {
+      "id": "doc-002",
+      "title": "Search Quality Notes",
+      "content": "Precision improved after ranking tweak, but recall still drops for long multi-topic queries.",
+      "tags": [
+        "search",
+        "quality"
+      ]
+    },
+    {
+      "id": "doc-003",
+      "title": "Customer Interview Summary",
+      "content": "Admins love audit visibility but struggle with onboarding complexity and report latency.",
+      "tags": [
+        "research",
+        "customer"
+      ]
+    },
+    {
+      "id": "doc-004",
+      "title": "Engineering Decision Log",
+      "content": "Team chose checkpointed retries over aggressive parallel retries to reduce flaky integration failures.",
+      "tags": [
+        "engineering",
+        "decision-log"
+      ]
+    }
+  ]
+}

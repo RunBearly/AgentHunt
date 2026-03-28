@@ -1,0 +1,76 @@
+{
+  "id": "customer_support",
+  "display_name": "Customer Support",
+  "status": "demo-supported",
+  "description": "Ticket lookup, triage, article retrieval, and support recap workflows.",
+  "design_rules": [
+    "Tasks must stay vendor-neutral within the category.",
+    "Tasks should be short enough for high sample count and repeated simulation.",
+    "Fake tools should preserve differentiated product logic, not just naming differences."
+  ],
+  "core_tasks": [
+    {
+      "id": "SUP-01",
+      "title": "Find a ticket by issue",
+      "goal": "Locate relevant support tickets by issue description.",
+      "scored": true
+    },
+    {
+      "id": "SUP-02",
+      "title": "Summarize a support thread",
+      "goal": "Summarize a ticket conversation and current state.",
+      "scored": true
+    },
+    {
+      "id": "SUP-03",
+      "title": "Classify severity",
+      "goal": "Classify ticket urgency and escalation risk.",
+      "scored": true
+    },
+    {
+      "id": "SUP-04",
+      "title": "Suggest next response",
+      "goal": "Draft a next support response using ticket context.",
+      "scored": true
+    },
+    {
+      "id": "SUP-05",
+      "title": "Find related knowledge article",
+      "goal": "Retrieve a matching help article or resolution note.",
+      "scored": true
+    },
+    {
+      "id": "SUP-06",
+      "title": "Recap support backlog",
+      "goal": "Summarize backlog health and top issues.",
+      "scored": true
+    }
+  ],
+  "reserve_tasks": [
+    {
+      "id": "SUP-R1",
+      "title": "Extract root causes",
+      "goal": "Cluster recurring support causes.",
+      "scored": false
+    },
+    {
+      "id": "SUP-R2",
+      "title": "Compare resolution quality",
+      "goal": "Compare two similar ticket resolutions.",
+      "scored": false
+    }
+  ],
+  "explicit_exclusions": [
+    "Admin policy management",
+    "Billing system mutation as a required task"
+  ],
+  "fixture_bundle": "fixtures/customer_support/default.json",
+  "task_fixture_focus": {
+    "SUP-01": "ticket_lookup",
+    "SUP-02": "thread_summary",
+    "SUP-03": "severity_classification",
+    "SUP-04": "response_draft",
+    "SUP-05": "kb_lookup",
+    "SUP-06": "backlog_recap"
+  }
+}

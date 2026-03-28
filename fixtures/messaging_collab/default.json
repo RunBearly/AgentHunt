@@ -1,0 +1,44 @@
+{
+  "bundle_id": "messaging-collab-default-v1",
+  "category_id": "messaging_collab",
+  "description": "Synthetic messaging threads and channel snippets for collaboration tasks.",
+  "threads": [
+    {
+      "id": "msg-001",
+      "channel": "#launch-war-room",
+      "topic": "launch blockers",
+      "messages": [
+        "Need final FAQ today.",
+        "Analytics retry bug still blocking confidence.",
+        "Escalate if not fixed by 5pm."
+      ]
+    },
+    {
+      "id": "msg-002",
+      "channel": "#sales-feedback",
+      "topic": "pricing confusion",
+      "messages": [
+        "Prospects ask whether audit logs are included.",
+        "We need a cleaner objection-handling script."
+      ]
+    },
+    {
+      "id": "msg-003",
+      "channel": "#support-digest",
+      "topic": "report latency",
+      "messages": [
+        "Enterprise admins report slow dashboards.",
+        "Pattern seems tied to multi-workspace queries."
+      ]
+    },
+    {
+      "id": "msg-004",
+      "channel": "#product-search",
+      "topic": "search precision",
+      "messages": [
+        "Precision improved after ranking tweak.",
+        "Recall is still weak for multi-topic queries."
+      ]
+    }
+  ]
+}

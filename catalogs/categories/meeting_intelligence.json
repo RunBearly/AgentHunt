@@ -1,0 +1,92 @@
+{
+  "id": "meeting_intelligence",
+  "display_name": "Meeting Intelligence",
+  "status": "demo-default",
+  "description": "Meeting notes, transcript, summary, action-item, and cross-meeting insight workflows.",
+  "design_rules": [
+    "Tasks must stay vendor-neutral within the category.",
+    "Tasks should be short enough for high sample count and repeated simulation.",
+    "Fake tools should preserve differentiated product logic, not just naming differences."
+  ],
+  "core_tasks": [
+    {
+      "id": "MEET-01",
+      "title": "Find a meeting by metadata",
+      "goal": "Locate meetings by title, date, participant, or keyword clues.",
+      "scored": true
+    },
+    {
+      "id": "MEET-02",
+      "title": "Retrieve meeting summary",
+      "goal": "Fetch summary, highlights, or recap for one meeting.",
+      "scored": true
+    },
+    {
+      "id": "MEET-03",
+      "title": "Retrieve transcript evidence",
+      "goal": "Find transcript snippets or evidence for a question.",
+      "scored": true
+    },
+    {
+      "id": "MEET-04",
+      "title": "Extract action items",
+      "goal": "Identify next steps, owners, and follow-ups.",
+      "scored": true
+    },
+    {
+      "id": "MEET-05",
+      "title": "Search across meetings",
+      "goal": "Find recurring topics across multiple meetings.",
+      "scored": true
+    },
+    {
+      "id": "MEET-06",
+      "title": "Compare themes across meetings",
+      "goal": "Summarize repeated objections, risks, or decisions.",
+      "scored": true
+    },
+    {
+      "id": "MEET-07",
+      "title": "Lookup meeting context",
+      "goal": "Retrieve relevant meeting/person/team context.",
+      "scored": true
+    },
+    {
+      "id": "MEET-08",
+      "title": "Produce a recap review",
+      "goal": "Explain what the tool did well or poorly for the task set.",
+      "scored": true
+    }
+  ],
+  "reserve_tasks": [
+    {
+      "id": "MEET-R1",
+      "title": "Upload recording for analysis",
+      "goal": "Analyze an uploaded audio or recording artifact.",
+      "scored": false
+    },
+    {
+      "id": "MEET-R2",
+      "title": "Live meeting query",
+      "goal": "Query a currently active or just-finished meeting.",
+      "scored": false
+    }
+  ],
+  "explicit_exclusions": [
+    "Meeting-bot scheduling or auto-join workflows",
+    "CRM mutation as a required task",
+    "Org-admin configuration tasks",
+    "Vendor-specific dashboard navigation tasks"
+  ],
+  "fixture_bundle": "fixtures/meeting_intelligence/default.json",
+  "task_fixture_focus": {
+    "MEET-01": "meeting_index",
+    "MEET-02": "meeting_summary",
+    "MEET-03": "transcript_evidence",
+    "MEET-04": "action_items",
+    "MEET-05": "topic_search",
+    "MEET-06": "theme_compare",
+    "MEET-07": "context_lookup",
+    "MEET-08": "review_recap"
+  }
+}

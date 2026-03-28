@@ -1,0 +1,69 @@
+{
+  "id": "tasks_workflow",
+  "display_name": "Tasks / Workflow",
+  "status": "demo-supported",
+  "description": "Task creation, status mutation, prioritization, filtering, and workflow recap workflows.",
+  "design_rules": [
+    "Tasks must stay vendor-neutral within the category.",
+    "Tasks should be short enough for high sample count and repeated simulation.",
+    "Fake tools should preserve differentiated product logic, not just naming differences."
+  ],
+  "core_tasks": [
+    {
+      "id": "TASK-01",
+      "title": "Create a task",
+      "goal": "Create a new task or issue from a short instruction.",
+      "scored": true
+    },
+    {
+      "id": "TASK-02",
+      "title": "Update status",
+      "goal": "Move a task to a new state.",
+      "scored": true
+    },
+    {
+      "id": "TASK-03",
+      "title": "Change priority",
+      "goal": "Update urgency/priority ranking.",
+      "scored": true
+    },
+    {
+      "id": "TASK-04",
+      "title": "Filter tasks",
+      "goal": "Return a filtered task view by status/owner/label.",
+      "scored": true
+    },
+    {
+      "id": "TASK-05",
+      "title": "Recap workflow state",
+      "goal": "Summarize what is blocked, active, and next.",
+      "scored": true
+    }
+  ],
+  "reserve_tasks": [
+    {
+      "id": "TASK-R1",
+      "title": "Reassign task ownership",
+      "goal": "Change assignee or ownership.",
+      "scored": false
+    },
+    {
+      "id": "TASK-R2",
+      "title": "Group tasks by theme",
+      "goal": "Cluster tasks by a shared topic.",
+      "scored": false
+    }
+  ],
+  "explicit_exclusions": [
+    "Admin-only project configuration",
+    "Vendor-specific board automation as a required task"
+  ],
+  "fixture_bundle": "fixtures/tasks_workflow/default.json",
+  "task_fixture_focus": {
+    "TASK-01": "task_create",
+    "TASK-02": "status_update",
+    "TASK-03": "priority_change",
+    "TASK-04": "task_filter",
+    "TASK-05": "workflow_recap"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "bundle_id": "crm-sales-default-v1",
+  "category_id": "crm_sales",
+  "description": "Synthetic CRM records for account and pipeline tasks.",
+  "accounts": [
+    {
+      "account": "Acme",
+      "owner": "Ivy",
+      "stage": "Proposal",
+      "amount": 120000,
+      "last_touch": "2026-03-27",
+      "risk": "medium"
+    },
+    {
+      "account": "Beacon",
+      "owner": "Jon",
+      "stage": "Discovery",
+      "amount": 45000,
+      "last_touch": "2026-03-26",
+      "risk": "high"
+    },
+    {
+      "account": "Cinder",
+      "owner": "Kira",
+      "stage": "Negotiation",
+      "amount": 98000,
+      "last_touch": "2026-03-28",
+      "risk": "medium"
+    },
+    {
+      "account": "Delta",
+      "owner": "Ivy",
+      "stage": "Pilot",
+      "amount": 150000,
+      "last_touch": "2026-03-25",
+      "risk": "high"
+    }
+  ]
+}

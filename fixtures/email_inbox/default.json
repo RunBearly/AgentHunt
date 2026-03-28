@@ -1,0 +1,55 @@
+{
+  "bundle_id": "email-inbox-default-v1",
+  "category_id": "email_inbox",
+  "description": "Synthetic inbox threads for lookup, triage, and drafting tasks.",
+  "emails": [
+    {
+      "id": "mail-001",
+      "from": "ceo@acme.com",
+      "subject": "Launch review follow-up",
+      "date": "2026-03-27",
+      "thread_id": "thr-001",
+      "body": "Can you summarize the launch blockers and tell me what needs executive review by Monday?",
+      "labels": [
+        "leadership",
+        "launch"
+      ]
+    },
+    {
+      "id": "mail-002",
+      "from": "customer@beacon.io",
+      "subject": "Reporting latency question",
+      "date": "2026-03-27",
+      "thread_id": "thr-002",
+      "body": "Our admins are seeing slow reporting dashboards. Is there a workaround this week?",
+      "labels": [
+        "customer",
+        "support"
+      ]
+    },
+    {
+      "id": "mail-003",
+      "from": "sales@cinder.ai",
+      "subject": "Need updated pricing deck",
+      "date": "2026-03-28",
+      "thread_id": "thr-003",
+      "body": "Prospects keep asking about audit coverage in the base plan. We need a cleaner deck.",
+      "labels": [
+        "sales",
+        "pricing"
+      ]
+    },
+    {
+      "id": "mail-004",
+      "from": "pm@internal.local",
+      "subject": "Search ranking notes",
+      "date": "2026-03-28",
+      "thread_id": "thr-004",
+      "body": "Precision improved, but recall still drops on long queries. Please propose next steps.",
+      "labels": [
+        "product",
+        "search"
+      ]
+    }
+  ]
+}

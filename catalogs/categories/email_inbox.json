@@ -1,0 +1,76 @@
+{
+  "id": "email_inbox",
+  "display_name": "Email / Inbox",
+  "status": "demo-supported",
+  "description": "Inbox retrieval, drafting, triage, and follow-up workflows.",
+  "design_rules": [
+    "Tasks must stay vendor-neutral within the category.",
+    "Tasks should be short enough for high sample count and repeated simulation.",
+    "Fake tools should preserve differentiated product logic, not just naming differences."
+  ],
+  "core_tasks": [
+    {
+      "id": "MAIL-01",
+      "title": "Find an email by metadata",
+      "goal": "Locate an email by sender, subject, date, or keyword.",
+      "scored": true
+    },
+    {
+      "id": "MAIL-02",
+      "title": "Summarize a thread",
+      "goal": "Summarize a single thread with decisions and follow-ups.",
+      "scored": true
+    },
+    {
+      "id": "MAIL-03",
+      "title": "Draft a reply",
+      "goal": "Draft a reply based on email context and intent.",
+      "scored": true
+    },
+    {
+      "id": "MAIL-04",
+      "title": "Classify inbox items",
+      "goal": "Classify messages by urgency, topic, or owner.",
+      "scored": true
+    },
+    {
+      "id": "MAIL-05",
+      "title": "Extract follow-ups",
+      "goal": "Identify next steps, owners, and deadlines from email threads.",
+      "scored": true
+    },
+    {
+      "id": "MAIL-06",
+      "title": "Recap inbox state",
+      "goal": "Summarize what needs attention now versus later.",
+      "scored": true
+    }
+  ],
+  "reserve_tasks": [
+    {
+      "id": "MAIL-R1",
+      "title": "Schedule from email",
+      "goal": "Create a scheduling proposal from thread context.",
+      "scored": false
+    },
+    {
+      "id": "MAIL-R2",
+      "title": "Bulk triage",
+      "goal": "Triage a small batch of inbound messages.",
+      "scored": false
+    }
+  ],
+  "explicit_exclusions": [
+    "Mailbox admin configuration",
+    "Mass email campaigns as required tasks"
+  ],
+  "fixture_bundle": "fixtures/email_inbox/default.json",
+  "task_fixture_focus": {
+    "MAIL-01": "email_lookup",
+    "MAIL-02": "thread_summary",
+    "MAIL-03": "reply_draft",
+    "MAIL-04": "classification",
+    "MAIL-05": "followup_extract",
+    "MAIL-06": "inbox_recap"
+  }
+}

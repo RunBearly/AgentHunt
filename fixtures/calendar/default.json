@@ -1,0 +1,47 @@
+{
+  "bundle_id": "calendar-default-v1",
+  "category_id": "calendar",
+  "description": "Synthetic calendar events for scheduling and conflict tasks.",
+  "events": [
+    {
+      "id": "cal-001",
+      "title": "Leadership Sync",
+      "start": "2026-03-29T09:00:00",
+      "end": "2026-03-29T09:30:00",
+      "attendees": [
+        "Ava",
+        "Ben"
+      ]
+    },
+    {
+      "id": "cal-002",
+      "title": "Customer Debrief",
+      "start": "2026-03-29T10:00:00",
+      "end": "2026-03-29T11:00:00",
+      "attendees": [
+        "Chloe",
+        "Dina"
+      ]
+    },
+    {
+      "id": "cal-003",
+      "title": "Product Review",
+      "start": "2026-03-29T10:30:00",
+      "end": "2026-03-29T11:15:00",
+      "attendees": [
+        "Ava",
+        "Hiro"
+      ]
+    },
+    {
+      "id": "cal-004",
+      "title": "Design Crit",
+      "start": "2026-03-29T14:00:00",
+      "end": "2026-03-29T15:00:00",
+      "attendees": [
+        "Farah",
+        "Ivy"
+      ]
+    }
+  ]
+}

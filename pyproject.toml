@@ -1,0 +1,5 @@
+[project]
+name = "agenthunt"
+version = "0.1.0"
+description = "AgentHunt fake-tool simulator"
+requires-python = ">=3.11"

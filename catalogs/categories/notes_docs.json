@@ -1,0 +1,77 @@
+{
+  "id": "notes_docs",
+  "display_name": "Notes / Docs",
+  "status": "demo-supported",
+  "description": "Document, notes, and knowledge-base creation, editing, retrieval, and summarization workflows.",
+  "design_rules": [
+    "Tasks must stay vendor-neutral within the category.",
+    "Tasks should be short enough for high sample count and repeated simulation.",
+    "Fake tools should preserve differentiated product logic, not just naming differences."
+  ],
+  "core_tasks": [
+    {
+      "id": "DOC-01",
+      "title": "Create a new note or doc",
+      "goal": "Create a document/note from brief instructions.",
+      "scored": true
+    },
+    {
+      "id": "DOC-02",
+      "title": "Edit existing content",
+      "goal": "Update existing document text safely.",
+      "scored": true
+    },
+    {
+      "id": "DOC-03",
+      "title": "Summarize a long page",
+      "goal": "Summarize a document with a concise recap.",
+      "scored": true
+    },
+    {
+      "id": "DOC-04",
+      "title": "Find related content",
+      "goal": "Find relevant notes/pages by topic.",
+      "scored": true
+    },
+    {
+      "id": "DOC-05",
+      "title": "Extract key decisions",
+      "goal": "Pull decisions or takeaways from one page or note set.",
+      "scored": true
+    },
+    {
+      "id": "DOC-06",
+      "title": "Reformat content",
+      "goal": "Reorganize or restructure content without losing meaning.",
+      "scored": true
+    }
+  ],
+  "reserve_tasks": [
+    {
+      "id": "DOC-R1",
+      "title": "Build a mini knowledge page",
+      "goal": "Create a structured page with sections and bullets.",
+      "scored": false
+    },
+    {
+      "id": "DOC-R2",
+      "title": "Cross-document synthesis",
+      "goal": "Compare multiple docs and produce a synthesis.",
+      "scored": false
+    }
+  ],
+  "explicit_exclusions": [
+    "Permissions and sharing workflows as required tasks",
+    "Vendor-specific block types as hard requirements",
+    "Admin-only workspace configuration flows"
+  ],
+  "fixture_bundle": "fixtures/notes_docs/default.json",
+  "task_fixture_focus": {
+    "DOC-01": "doc_create",
+    "DOC-02": "doc_edit",
+    "DOC-03": "doc_summary",
+    "DOC-04": "doc_search",
+    "DOC-05": "decision_extract",
+    "DOC-06": "doc_reformat"
+  }
+}

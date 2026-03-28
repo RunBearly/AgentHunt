@@ -1,0 +1,69 @@
+{
+  "id": "calendar",
+  "display_name": "Calendar",
+  "status": "demo-supported",
+  "description": "Calendar retrieval, event mutation, conflict detection, and schedule recommendation workflows.",
+  "design_rules": [
+    "Tasks must stay vendor-neutral within the category.",
+    "Tasks should be short enough for high sample count and repeated simulation.",
+    "Fake tools should preserve differentiated product logic, not just naming differences."
+  ],
+  "core_tasks": [
+    {
+      "id": "CAL-01",
+      "title": "Lookup daily schedule",
+      "goal": "Retrieve today or tomorrow schedule.",
+      "scored": true
+    },
+    {
+      "id": "CAL-02",
+      "title": "Create an event",
+      "goal": "Create a meeting/event from instructions.",
+      "scored": true
+    },
+    {
+      "id": "CAL-03",
+      "title": "Move or update an event",
+      "goal": "Change time or title safely.",
+      "scored": true
+    },
+    {
+      "id": "CAL-04",
+      "title": "Find conflicts",
+      "goal": "Detect overlaps or scheduling conflicts.",
+      "scored": true
+    },
+    {
+      "id": "CAL-05",
+      "title": "Recommend a time slot",
+      "goal": "Suggest a good time based on availability.",
+      "scored": true
+    }
+  ],
+  "reserve_tasks": [
+    {
+      "id": "CAL-R1",
+      "title": "Summarize the day",
+      "goal": "Produce a concise daily overview.",
+      "scored": false
+    },
+    {
+      "id": "CAL-R2",
+      "title": "Find a free block",
+      "goal": "Locate a free block that fits constraints.",
+      "scored": false
+    }
+  ],
+  "explicit_exclusions": [
+    "Org-admin calendar sharing policies",
+    "Room booking systems as a hard dependency"
+  ],
+  "fixture_bundle": "fixtures/calendar/default.json",
+  "task_fixture_focus": {
+    "CAL-01": "schedule_lookup",
+    "CAL-02": "create_event",
+    "CAL-03": "update_event",
+    "CAL-04": "conflict_detect",
+    "CAL-05": "slot_recommend"
+  }
+}

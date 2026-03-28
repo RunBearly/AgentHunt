@@ -1,0 +1,43 @@
+{
+  "version": 2,
+  "mode": "pre-backend-demo-prep",
+  "primary_comparison_category": "meeting_intelligence",
+  "reliable_fallback_category": "spreadsheet",
+  "active_categories": [
+    "meeting_intelligence",
+    "notes_docs",
+    "spreadsheet",
+    "calendar",
+    "tasks_workflow",
+    "email_inbox",
+    "messaging_collab",
+    "crm_sales",
+    "customer_support",
+    "knowledge_search"
+  ],
+  "budget": {
+    "currency": "USD",
+    "soft_cap": 100.0,
+    "hard_stop_enabled": true
+  },
+  "execution": {
+    "mode": "local-fake-tool-simulation",
+    "checkpointing": true,
+    "resume_supported": true,
+    "mock_mode_required_before_real": false,
+    "full_3h_run_deferred_until_backend_integration": true
+  },
+  "review_surfaces": [
+    "review/category-scorecard.md",
+    "review/fake-category-tool-matrix.md",
+    "review/tasks-meeting-intelligence.md",
+    "review/mcps-meeting-intelligence.md",
+    "review/agent-setting-summary.md"
+  ],
+  "selection_policy": {
+    "priority": "tool-density-first",
+    "minimum_fake_tools_per_category": 8,
+    "preferred_primary_category": "meeting_intelligence",
+    "fallback_category": "spreadsheet"
+  }
+}

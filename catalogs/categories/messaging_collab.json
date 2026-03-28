@@ -1,0 +1,76 @@
+{
+  "id": "messaging_collab",
+  "display_name": "Messaging / Collaboration",
+  "status": "demo-supported",
+  "description": "Channel search, thread recap, follow-up extraction, and team communication workflows.",
+  "design_rules": [
+    "Tasks must stay vendor-neutral within the category.",
+    "Tasks should be short enough for high sample count and repeated simulation.",
+    "Fake tools should preserve differentiated product logic, not just naming differences."
+  ],
+  "core_tasks": [
+    {
+      "id": "MSG-01",
+      "title": "Find a thread by keyword",
+      "goal": "Locate a relevant thread or channel conversation.",
+      "scored": true
+    },
+    {
+      "id": "MSG-02",
+      "title": "Summarize a channel discussion",
+      "goal": "Summarize a recent discussion thread.",
+      "scored": true
+    },
+    {
+      "id": "MSG-03",
+      "title": "Extract decisions and owners",
+      "goal": "Pull decisions, owners, and unresolved questions.",
+      "scored": true
+    },
+    {
+      "id": "MSG-04",
+      "title": "Draft a follow-up message",
+      "goal": "Draft a concise follow-up based on discussion context.",
+      "scored": true
+    },
+    {
+      "id": "MSG-05",
+      "title": "Recap blockers",
+      "goal": "Summarize blockers and escalations from recent messages.",
+      "scored": true
+    },
+    {
+      "id": "MSG-06",
+      "title": "Cross-thread topic recap",
+      "goal": "Synthesize a topic across multiple channel threads.",
+      "scored": true
+    }
+  ],
+  "reserve_tasks": [
+    {
+      "id": "MSG-R1",
+      "title": "Pinpoint evidence lookup",
+      "goal": "Find exact message evidence for a claim.",
+      "scored": false
+    },
+    {
+      "id": "MSG-R2",
+      "title": "Channel digest",
+      "goal": "Produce a daily digest for a channel.",
+      "scored": false
+    }
+  ],
+  "explicit_exclusions": [
+    "Workspace admin controls",
+    "Bot installation or permissions as required tasks"
+  ],
+  "fixture_bundle": "fixtures/messaging_collab/default.json",
+  "task_fixture_focus": {
+    "MSG-01": "thread_lookup",
+    "MSG-02": "thread_summary",
+    "MSG-03": "decision_extract",
+    "MSG-04": "followup_draft",
+    "MSG-05": "blocker_recap",
+    "MSG-06": "cross_thread_synthesis"
+  }
+}
