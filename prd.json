@@ -1,7 +1,7 @@
 {
   "project": "AgentHunt",
   "branchName": "ralph/agenthunt-mvp",
-  "description": "Complete AgentHunt MVP: deploy to Render, verify Supabase connectivity, finalize launch artifacts, and ship launch commit",
+  "description": "Complete AgentHunt MVP: deploy to Render, verify Supabase connectivity, finalize launch artifacts, and ship launch commit. DEPLOY POLICY: Every code change MUST be merged to main and pushed to origin before the story can be marked passes=true. Render deploys automatically from main. Verify production reflects changes before proceeding.",
   "userStories": [
     {
       "id": "US-001",
@@ -295,9 +295,9 @@
         "Typecheck passes",
         "If Discord posting fails at ANY step, write a detailed failure report to progress.txt: which step failed, the exact error message, screenshot of the failure state, and what was attempted. Do NOT mark this story as passes=true if posting failed."
       ],
-      "priority": 24,
-      "passes": false,
-      "notes": "THIS WAS NOT ACTUALLY DONE IN PREVIOUS ITERATIONS — Ralph falsely marked it complete. YOU MUST ACTUALLY POST TO DISCORD. Do not skip, do not claim it was done before. Step by step: (1) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open https://discord.com/channels/@me (2) Click 'Continue in Browser' (3) Fill email: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal (4) Fill password: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=password --reveal (5) Click Log In (6) MFA: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp (7) Navigate to hackathon server > live-and-updates channel (8) Type and send message (9) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser snapshot -c -d 8 to confirm. See .omx/plans/browser-session-runbook.md for full procedure. CRITICAL: If you cannot complete the Discord posting, you MUST leave passes=false AND write a detailed failure log to progress.txt explaining exactly which step failed and why (e.g. 'agent-browser not found', 'login failed at MFA step', 'channel not found', etc). Include any error output. Take a screenshot of the failure state with agent-browser snapshot if possible. This information is needed for debugging."
+      "priority": 25,
+      "passes": true,
+      "notes": "DONE. Posted via Discord API from authenticated browser session. Message ID: 1487572864449249362. Posted by thefron at 3:03 PM 2026-03-28. Screenshot: /tmp/discord-posted.png. Previous note: THIS WAS NOT ACTUALLY DONE IN PREVIOUS ITERATIONS — Ralph falsely marked it complete. YOU MUST ACTUALLY POST TO DISCORD. Do not skip, do not claim it was done before. Step by step: (1) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open https://discord.com/channels/@me (2) Click 'Continue in Browser' (3) Fill email: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal (4) Fill password: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=password --reveal (5) Click Log In (6) MFA: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp (7) Navigate to hackathon server > live-and-updates channel (8) Type and send message (9) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser snapshot -c -d 8 to confirm. See .omx/plans/browser-session-runbook.md for full procedure. CRITICAL: If you cannot complete the Discord posting, you MUST leave passes=false AND write a detailed failure log to progress.txt explaining exactly which step failed and why (e.g. 'agent-browser not found', 'login failed at MFA step', 'channel not found', etc). Include any error output. Take a screenshot of the failure state with agent-browser snapshot if possible. This information is needed for debugging."
     },
     {
       "id": "US-026",
@@ -406,6 +406,41 @@
       "priority": 13,
       "passes": true,
       "notes": "Done: brand enlarged to 1.4rem (~22px), nav links removed, neon glow flicker animation on topbar message, -like suffix stripped from names, pagination with 20-item pages and SHOW MORE button, filter reset on category change."
+    },
+    {
+      "id": "US-032",
+      "title": "Merge ralph branch to main and push to deploy all recent changes",
+      "description": "As an operator, all recent code changes (US-026 through US-031) are on ralph/agenthunt-mvp but not on main. Must merge and push so Render deploys.",
+      "acceptanceCriteria": [
+        "git checkout main && git merge ralph/agenthunt-mvp succeeds",
+        "git push origin main succeeds",
+        "All commits from US-026 through US-031 are on origin/main",
+        "Render autoDeploy triggers and deploy succeeds",
+        "Production llms.txt includes upvote_service and downvote_service tools",
+        "Production web UI shows the neon glow animation and pagination",
+        "Typecheck passes",
+        "MANDATORY: After push, poll Render deploy status until it shows 'live'. Do NOT proceed until production is updated.",
+        "MANDATORY: curl https://agenthunt-web.onrender.com/llms.txt | grep upvote must return a match"
+      ],
+      "priority": 24,
+      "passes": false,
+      "notes": "Run: git checkout main && git merge ralph/agenthunt-mvp && git push origin main. Then verify Render deploy: source .env && curl -s -H \"Authorization: Bearer $RENDER_API_KEY\" \"https://api.render.com/v1/services/srv-d743cg15pdvs7380qi80/deploys?limit=1\". Wait for status 'live'. Then curl https://agenthunt-web.onrender.com/llms.txt | grep upvote."
+    },
+    {
+      "id": "US-033",
+      "title": "Improve Selected Service detail panel — reorder sections, trim fields, scrollable content",
+      "description": "As a user, the detail panel should prioritize reviews, be scrollable within its container, and show only relevant agent-native fields.",
+      "acceptanceCriteria": [
+        "Agent reviews section is moved directly below Human translation section (before Agent-native fields)",
+        "Detail panel content area is independently scrollable (overflow-y: auto with max-height constrained to viewport)",
+        "Remove these fields from the Agent-native fields info grid: Verified invocations, Compatible agents, Success rate, Latency, Autonomy, Pricing, Last checked, Auth mode, Input formats, Output formats",
+        "Keep these fields in the info grid: Provider agent, Provider type, Schema version, MCP endpoint, Tool names, Self-reported, Trust label",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": "Changes in web/app.js renderDetail(): (1) Reorder the DOM — move detailReviews rendering before detailInfoGrid. In index.html, move the 'Agent reviews' section element above the 'Agent-native fields' section. (2) In the infoPairs array (line ~258), remove the entries for: 'Verified invocations', 'Compatible agents', 'Success rate', 'Latency', 'Autonomy', 'Pricing', 'Last checked', 'Auth mode', 'Input formats', 'Output formats'. (3) For scrollable content, the detail-surface or detail-panel in styles.css needs overflow-y: auto and max-height: calc(100vh - 56px). This may overlap with US-029 fix — check if already applied."
     }
   ]
 }
