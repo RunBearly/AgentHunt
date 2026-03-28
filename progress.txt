@@ -1,0 +1,24 @@
+## Codebase Patterns
+- Use `createApp()` from `src/server/app.ts` to get a testable Express app (no `listen` call)
+- `src/server/index.ts` is the thin entry point that imports `createApp()` and calls `listen()`
+- MCP endpoint at POST /mcp creates a fresh server+transport per request (no session persistence across requests)
+- MCP Streamable HTTP transport requires `Accept: application/json, text/event-stream` header
+- MCP responses come as SSE (text/event-stream) — parse `data:` lines to extract JSON-RPC payloads
+- `createMcpExpressApp()` from the SDK adds body-parsing middleware that conflicts with `express.json()` — use plain `express()` instead when manual MCP handling is in place
+- Tests use Node built-in test runner (`node:test`) with `tsx` for TypeScript — run via `npm test`
+- Without DATABASE_URL, the repository falls back to in-memory seed data (good for tests)
+
+---
+
+## 2026-03-28 - US-001
+- What was implemented: Integration tests for MCP endpoint and HTTP API
+- Files changed:
+  - `src/server/app.ts` (new) — extracted Express app creation into importable module
+  - `src/server/index.ts` — simplified to import `createApp()` and call `listen()`
+  - `tests/api.test.ts` (new) — 7 integration tests covering health, services CRUD, reviews, trust signals, and MCP endpoint
+- **Learnings for future iterations:**
+  - The MCP SDK's `createMcpExpressApp()` adds body-parser middleware that conflicts with `express.json()`, causing "stream is not readable" errors on POST routes. Replaced with plain `express()`.
+  - MCP Streamable HTTP requires `Accept: application/json, text/event-stream` header or returns 406
+  - MCP responses are SSE format, not plain JSON — need to parse `data:` lines from the event stream
+  - Each POST /mcp creates a fresh server+transport, so batched JSON-RPC arrays and multi-step sessions don't work in a single request
+---
