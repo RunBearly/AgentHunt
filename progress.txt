@@ -222,3 +222,19 @@
   - If working directory has uncommitted changes, `git stash` before switching branches, then `git stash pop` after switching back
   - Fast-forward merge is preferred when the target branch has no divergent commits
 ---
+
+## 2026-03-28 - US-013
+- What was implemented: Re-verified all production endpoints after US-016 deploy cycle
+- Production verification results:
+  - GET /api/health → status ok, databaseConnected true ✓
+  - GET /api/services → returns 3 real services (GitHub MCP, PostgreSQL MCP, Brave Search MCP) ✓
+  - POST /mcp → responds with valid JSON-RPC initialize response ✓
+  - GET /llms.txt → 200 OK ✓
+  - GET / → 200 OK, web UI served ✓
+  - README.md production URL matches actual deployed URL (agenthunt-web.onrender.com) ✓
+- Files changed:
+  - `prd.json` — marked US-013 as passes: true
+  - `progress.txt` — appended US-013 progress entry
+- **Learnings for future iterations:**
+  - Production verification is idempotent — safe to re-run after each deploy cycle
+---

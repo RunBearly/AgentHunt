@@ -203,8 +203,8 @@
         "Typecheck passes"
       ],
       "priority": 13,
-      "passes": false,
-      "notes": "Cannot be verified until new code is deployed. Re-verify after US-016 deploys."
+      "passes": true,
+      "notes": "Verified 2026-03-28: all endpoints returning real data, README URL correct."
     },
     {
       "id": "US-014",
