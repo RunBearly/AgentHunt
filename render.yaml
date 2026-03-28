@@ -8,7 +8,10 @@ services:
     buildCommand: npm install && npm run build
     startCommand: npm run start
     autoDeploy: true
+    healthCheckPath: /api/health
     envVars:
+      - key: NODE_VERSION
+        value: "22"
       - key: OPENAI_API_KEY
         sync: false
       - key: DATABASE_URL
