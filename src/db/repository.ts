@@ -23,7 +23,7 @@ export class AgentHuntRepository {
     }
 
     try {
-      this.pool = new Pool({ connectionString: env.databaseUrl, ssl: { rejectUnauthorized: false } });
+      this.pool = new Pool({ connectionString: env.databaseUrl, ssl: { rejectUnauthorized: false }, max: 3, idleTimeoutMillis: 30000 });
       await this.pool.query('select 1');
       await this.ensureSchema();
       this.health = { mode: 'database', databaseConnected: true };
