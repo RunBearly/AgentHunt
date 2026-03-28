@@ -310,3 +310,19 @@
   - Fast-forward merge is clean when feature branch is strictly ahead of main with no divergent commits
   - `git stash` not needed when working tree is clean (no uncommitted changes)
 ---
+
+## 2026-03-28 - US-016
+- What was implemented: Verified Render deploy succeeded with redesigned UI
+- Actions taken:
+  - Triggered deploy with cache clear (previous deploy had stale build artifacts)
+  - Deploy dep-d744lff5r7bs73cnqts0 went live with commit e8216b6
+  - Verified production HTML has redesigned AGENTHUNT branding, no page-noise/page-glow elements
+  - Verified /api/services returns 85 real services (no mock data)
+  - No fallbackServices or MeshRouter references in production HTML
+- Files changed:
+  - `prd.json` — marked US-016 as passes: true
+  - `progress.txt` — appended US-016 progress entry
+- **Learnings for future iterations:**
+  - Render build cache can serve stale static files even after a deploy — use `{"clearCache":"clear"}` in the POST /deploys body to force a clean build
+  - Check file sizes (local vs production) as a quick way to detect stale deployments
+---

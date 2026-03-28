@@ -213,7 +213,7 @@
         "Human translation section shows distinct text from description (use a template if OpenAI unavailable)",
         "Summary stats cards compute from live data: service count, review %, avg latency or N/A, endpoint health count"
       ],
-      "priority": 13,
+      "priority": 15,
       "passes": true,
       "notes": "Reference design: design/agenthunt-redesign.png in the project root. Style guide: Industrial Technical Dashboard — dark mode, neon green (#00FF88) accent, JetBrains Mono + Space Grotesk fonts, sharp corners, hairline borders (#2f2f2f). Key colors: page bg #0C0C0C, card bg #0A0A0A, text primary #FFFFFF, text secondary #8a8a8a, text muted #6a6a6a, accent #00FF88, warning #FF8800, border #2f2f2f. Update web/styles.css and web/app.js. The top service (rank 1 or first in list) should get the featured treatment with green border and expanded layout. Google Fonts imports needed: JetBrains Mono and Space Grotesk."
     },
@@ -229,7 +229,7 @@
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
       ],
-      "priority": 14,
+      "priority": 16,
       "passes": true,
       "notes": "The responsive screenshot at 375px shows cards with horizontal overflow and detail panel not visible. Fix in web/styles.css — adjust grid layout, card widths, and detail panel positioning for small screens."
     },
@@ -245,7 +245,7 @@
         "Typecheck passes",
         "Tests pass"
       ],
-      "priority": 15,
+      "priority": 17,
       "passes": true,
       "notes": "git checkout main && git merge ralph/agenthunt-mvp && git push origin main. Render service srv-d743cg15pdvs7380qi80 has autoDeploy on branch main."
     },
@@ -260,9 +260,9 @@
         "No console errors on the production site",
         "Typecheck passes"
       ],
-      "priority": 16,
-      "passes": false,
-      "notes": "Check deploy: source .env && curl -s -H \"Authorization: Bearer $RENDER_API_KEY\" \"https://api.render.com/v1/services/srv-d743cg15pdvs7380qi80/deploys?limit=1\". Then curl production endpoints."
+      "priority": 18,
+      "passes": true,
+      "notes": "Verified: deploy dep-d744lff5r7bs73cnqts0 live with commit e8216b6. Redesigned UI confirmed (AGENTHUNT branding, no page-noise, no MeshRouter). 85 real services from DB."
     },
     {
       "id": "US-017",
@@ -276,7 +276,7 @@
         "Web UI at / renders redesigned command-center layout with Top Service highlight",
         "Typecheck passes"
       ],
-      "priority": 17,
+      "priority": 19,
       "passes": false,
       "notes": "Verified 2026-03-28: all 7 endpoints confirmed with real data. Deploy dep-d744905ipkoc738e1650 live."
     },
@@ -293,9 +293,39 @@
         "Take a screenshot via agent-browser snapshot to confirm the message was posted",
         "Typecheck passes"
       ],
-      "priority": 18,
+      "priority": 20,
       "passes": false,
       "notes": "MUST use agent-browser CLI for Discord posting — do NOT skip this. Full procedure in .omx/plans/browser-session-runbook.md. Commands: (1) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal (2) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=password --reveal (3) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp (4) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open https://discord.com/channels/@me (5) Login with credentials, MFA with OTP (6) Navigate to live-and-updates channel (7) Type and send message (8) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser snapshot -c -d 8 to confirm."
+    },
+    {
+      "id": "US-026",
+      "title": "Fix reviews not showing in web UI — listServices does not include reviews from DB",
+      "description": "As a user, I want to see agent reviews on service cards and the detail panel. Reviews exist in the service_reviews table but listServices returns empty reviews arrays.",
+      "acceptanceCriteria": [
+        "GET /api/services returns services with their actual reviews from the service_reviews table (not the empty array stored in the payload)",
+        "Web UI detail panel shows reviews when a service has reviews in the DB",
+        "Review count in the detail panel header is accurate",
+        "The renderDetail() review section renders review cards with agent name, score, tested, and summary",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": "Root cause: listServices() in src/db/repository.ts (line 79) returns payload as-is from the services table. The payload has reviews:[] because submitService stores an empty array. Only getService() calls decorateWithCounts() which JOINs service_reviews. Fix options: (1) make listServices also call decorateWithCounts for each service, or (2) change the web UI to fetch /api/services/:id when selecting a service for detail view (more efficient). Option 2 is better — add a fetch call in renderDetail() or on card click that hits GET /api/services/{id} and uses the full response. The /api/services/:id endpoint already returns correct reviews via decorateWithCounts()."
+    },
+    {
+      "id": "US-027",
+      "title": "Fix MCP search_services returning empty for some queries",
+      "description": "As an agent, search_services should reliably find services. The search may fail on rank ordering when rank is not a valid integer.",
+      "acceptanceCriteria": [
+        "search_services MCP tool returns results for queries matching service names, categories, or capabilities",
+        "listServices query handles non-integer rank values gracefully (ORDER BY should not crash on null or non-numeric rank)",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 14,
+      "passes": false,
+      "notes": "In src/db/repository.ts listServices() line 79: ORDER BY (payload->>'rank')::int may fail if rank is null or not a number. Fix: use COALESCE((payload->>'rank')::int, 999) or ORDER BY payload->>'rank' as text. Also check if searchServices text matching works correctly for all fields — the spread of empty arrays is fine but verify with a test."
     }
   ]
 }
