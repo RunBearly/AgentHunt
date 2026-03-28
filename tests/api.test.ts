@@ -85,6 +85,37 @@ describe('POST /api/services', () => {
   });
 });
 
+describe('MCP search_services', () => {
+  it('returns empty array for search without database', async () => {
+    const mcpHeaders = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json, text/event-stream'
+    };
+    // First initialize
+    await fetch(`${baseUrl}/mcp`, {
+      method: 'POST',
+      headers: mcpHeaders,
+      body: JSON.stringify({
+        jsonrpc: '2.0', id: 1, method: 'initialize',
+        params: { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'test', version: '0.1.0' } }
+      })
+    });
+    // Search — should not crash even with no data
+    const res = await fetch(`${baseUrl}/mcp`, {
+      method: 'POST',
+      headers: mcpHeaders,
+      body: JSON.stringify({
+        jsonrpc: '2.0', id: 2, method: 'tools/call',
+        params: { name: 'search_services', arguments: { query: 'github' } }
+      })
+    });
+    assert.equal(res.status, 200);
+    const text = await res.text();
+    // Should get a valid SSE response, not a crash
+    assert.ok(text.includes('data:'), 'Should return SSE data line');
+  });
+});
+
 async function parseSseJsonResponse(res: Response): Promise<unknown> {
   const text = await res.text();
   const lines = text.split('\n');

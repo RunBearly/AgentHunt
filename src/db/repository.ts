@@ -76,7 +76,7 @@ export class AgentHuntRepository {
       return [];
     }
 
-    const rows = await this.pool.query<{ payload: ServiceRecord }>('select payload from services order by (payload->>\'rank\')::int asc');
+    const rows = await this.pool.query<{ payload: ServiceRecord }>('select payload from services order by coalesce((payload->>\'rank\')::int, 999) asc');
     const services = rows.rows.map((row: { payload: ServiceRecord }) => row.payload);
     return services.filter((service: ServiceRecord) => !category || service.category === category);
   }
