@@ -4,7 +4,7 @@
   const ctx = canvas.getContext('2d');
 
   let w, h;
-  const GRID = 32;
+  const GRID = 24;
   const ACCENT = [0, 255, 136];
   let t = 0;
   let dots = [];
@@ -48,7 +48,7 @@
     if (mouse.active) {
       const dist = dd(px, py, smoothMouse.x, smoothMouse.y);
       const mr = smoothRadius;
-      if (dist < mr) val += (1 - dist / mr) * 0.8;
+      if (dist < mr) val += (1 - dist / mr) * 0.5;
     }
     return Math.min(val, 1);
   }
@@ -66,8 +66,8 @@
     mouseSpeed = dd(mouse.x, mouse.y, prevMouse.x, prevMouse.y);
     prevMouse.x = mouse.x;
     prevMouse.y = mouse.y;
-    const targetRadius = Math.min(320, 80 + mouseSpeed * 8);
-    smoothRadius += (targetRadius - smoothRadius) * 0.04;
+    const targetRadius = Math.min(280, 15 + mouseSpeed * 10);
+    smoothRadius += (targetRadius - smoothRadius) * 0.035;
 
     for (const d of dots) {
       d.x += d.vx;
@@ -86,9 +86,9 @@
       ctx.moveTo(sx, 0);
       ctx.lineTo(sx, h);
       const glow = getGlow(sx, h / 2);
-      const alpha = 0.04 + glow * 0.16;
+      const alpha = 0.025 + glow * 0.09;
       ctx.strokeStyle = `rgba(${ACCENT[0]},${ACCENT[1]},${ACCENT[2]},${alpha})`;
-      ctx.lineWidth = 0.5 + glow * 1;
+      ctx.lineWidth = 0.4 + glow * 0.6;
       ctx.stroke();
     }
 
@@ -99,9 +99,9 @@
       ctx.moveTo(0, sy);
       ctx.lineTo(w, sy);
       const glow = getGlow(w / 2, sy);
-      const alpha = 0.04 + glow * 0.16;
+      const alpha = 0.025 + glow * 0.09;
       ctx.strokeStyle = `rgba(${ACCENT[0]},${ACCENT[1]},${ACCENT[2]},${alpha})`;
-      ctx.lineWidth = 0.5 + glow * 1;
+      ctx.lineWidth = 0.4 + glow * 0.6;
       ctx.stroke();
     }
 
@@ -113,8 +113,8 @@
         const glow = getGlow(sx, sy);
         if (glow > 0.1) {
           ctx.beginPath();
-          ctx.arc(sx, sy, 1 + glow * 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${ACCENT[0]},${ACCENT[1]},${ACCENT[2]},${glow * 0.5})`;
+          ctx.arc(sx, sy, 0.8 + glow * 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${ACCENT[0]},${ACCENT[1]},${ACCENT[2]},${glow * 0.3})`;
           ctx.fill();
         }
       }
