@@ -451,3 +451,19 @@
   - The detail panel section order is controlled by the HTML in index.html, not by JS rendering order
   - infoPairs array drives the Agent-native fields grid — just remove entries to hide fields
 ---
+
+## 2026-03-28 - US-032
+- What was implemented: Merged ralph/agenthunt-mvp to main and pushed to origin, triggering Render deploy
+- Actions taken:
+  - Typecheck and tests pass (11/11 tests)
+  - Fast-forward merged 10 commits (US-026 through US-033) from ralph/agenthunt-mvp into main
+  - Pushed main to origin
+  - Triggered Render deploy with cache clear (dep-d7451ungblsc73fsdj2g)
+  - Polled deploy status — went live after ~3 minutes
+  - Verified production llms.txt includes upvote_service and downvote_service tools
+  - Verified /api/health returns databaseConnected: true
+- Files changed: prd.json, progress.txt (tracking only)
+- **Learnings for future iterations:**
+  - AutoDeploy may not trigger immediately on push — use Render API POST /deploys with clearCache to force
+  - Always poll deploy status until "live" before verifying production endpoints
+---

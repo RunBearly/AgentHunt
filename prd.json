@@ -142,7 +142,7 @@
       ],
       "priority": 9,
       "passes": true,
-      "notes": "DB seed data was already cleared from Supabase via management API. Now remove the code that would re-seed on next restart. Key files: src/db/repository.ts (remove seedIfEmpty, seededServices, import of services.json, and all fallback branches that reference seededServices \u2014 return [] or null instead), src/seed/services.json (delete file)."
+      "notes": "DB seed data was already cleared from Supabase via management API. Now remove the code that would re-seed on next restart. Key files: src/db/repository.ts (remove seedIfEmpty, seededServices, import of services.json, and all fallback branches that reference seededServices — return [] or null instead), src/seed/services.json (delete file)."
     },
     {
       "id": "US-010",
@@ -151,7 +151,7 @@
       "acceptanceCriteria": [
         "Remove the fallbackServices array from web/app.js (the large array of mock MeshRouter, PDF Ghost, etc.)",
         "Remove the globalActivity mock array from web/app.js",
-        "When /api/services returns empty array, UI shows a meaningful empty state (e.g. \"No services yet \u2014 submit one via the MCP endpoint\")",
+        "When /api/services returns empty array, UI shows a meaningful empty state (e.g. \"No services yet — submit one via the MCP endpoint\")",
         "When API is unavailable, UI shows a loading/error state instead of mock data",
         "hydrateFromApi() is the only data source",
         "Typecheck passes"
@@ -215,11 +215,11 @@
       ],
       "priority": 15,
       "passes": true,
-      "notes": "Reference design: design/agenthunt-redesign.png in the project root. Style guide: Industrial Technical Dashboard \u2014 dark mode, neon green (#00FF88) accent, JetBrains Mono + Space Grotesk fonts, sharp corners, hairline borders (#2f2f2f). Key colors: page bg #0C0C0C, card bg #0A0A0A, text primary #FFFFFF, text secondary #8a8a8a, text muted #6a6a6a, accent #00FF88, warning #FF8800, border #2f2f2f. Update web/styles.css and web/app.js. The top service (rank 1 or first in list) should get the featured treatment with green border and expanded layout. Google Fonts imports needed: JetBrains Mono and Space Grotesk."
+      "notes": "Reference design: design/agenthunt-redesign.png in the project root. Style guide: Industrial Technical Dashboard — dark mode, neon green (#00FF88) accent, JetBrains Mono + Space Grotesk fonts, sharp corners, hairline borders (#2f2f2f). Key colors: page bg #0C0C0C, card bg #0A0A0A, text primary #FFFFFF, text secondary #8a8a8a, text muted #6a6a6a, accent #00FF88, warning #FF8800, border #2f2f2f. Update web/styles.css and web/app.js. The top service (rank 1 or first in list) should get the featured treatment with green border and expanded layout. Google Fonts imports needed: JetBrains Mono and Space Grotesk."
     },
     {
       "id": "US-024",
-      "title": "Fix mobile layout \u2014 service cards overflow and detail panel is hidden",
+      "title": "Fix mobile layout — service cards overflow and detail panel is hidden",
       "description": "As a mobile user, service cards are too wide and the detail panel is not accessible.",
       "acceptanceCriteria": [
         "On mobile viewport (375px), service cards fit within screen width without horizontal overflow",
@@ -231,7 +231,7 @@
       ],
       "priority": 16,
       "passes": true,
-      "notes": "The responsive screenshot at 375px shows cards with horizontal overflow and detail panel not visible. Fix in web/styles.css \u2014 adjust grid layout, card widths, and detail panel positioning for small screens."
+      "notes": "The responsive screenshot at 375px shows cards with horizontal overflow and detail panel not visible. Fix in web/styles.css — adjust grid layout, card widths, and detail panel positioning for small screens."
     },
     {
       "id": "US-015",
@@ -266,7 +266,7 @@
     },
     {
       "id": "US-017",
-      "title": "Final production smoke test \u2014 all endpoints and UI",
+      "title": "Final production smoke test — all endpoints and UI",
       "description": "As a developer, I need to verify every production endpoint returns correct real data before announcing.",
       "acceptanceCriteria": [
         "GET /api/health returns status ok with databaseConnected true",
@@ -285,7 +285,7 @@
       "title": "Post Discord launch announcement via agent-browser",
       "description": "As a project maintainer, I need a Discord launch announcement drafted and posted to the designated channel.",
       "acceptanceCriteria": [
-        "MUST use agent-browser CLI to open Discord \u2014 this has NOT been done yet, do NOT mark as complete without actually posting",
+        "MUST use agent-browser CLI to open Discord — this has NOT been done yet, do NOT mark as complete without actually posting",
         "Login to Discord using credentials from 1Password (op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee)",
         "Complete MFA using OTP from 1Password (op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp)",
         "Navigate to the hackathon Discord server and find the live-and-updates channel",
@@ -297,11 +297,11 @@
       ],
       "priority": 25,
       "passes": true,
-      "notes": "DONE. Posted via Discord API from authenticated browser session. Message ID: 1487572864449249362. Posted by thefron at 3:03 PM 2026-03-28. Screenshot: /tmp/discord-posted.png. Previous note: THIS WAS NOT ACTUALLY DONE IN PREVIOUS ITERATIONS \u2014 Ralph falsely marked it complete. YOU MUST ACTUALLY POST TO DISCORD. Do not skip, do not claim it was done before. Step by step: (1) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open https://discord.com/channels/@me (2) Click 'Continue in Browser' (3) Fill email: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal (4) Fill password: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=password --reveal (5) Click Log In (6) MFA: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp (7) Navigate to hackathon server > live-and-updates channel (8) Type and send message (9) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser snapshot -c -d 8 to confirm. See .omx/plans/browser-session-runbook.md for full procedure. CRITICAL: If you cannot complete the Discord posting, you MUST leave passes=false AND write a detailed failure log to progress.txt explaining exactly which step failed and why (e.g. 'agent-browser not found', 'login failed at MFA step', 'channel not found', etc). Include any error output. Take a screenshot of the failure state with agent-browser snapshot if possible. This information is needed for debugging."
+      "notes": "DONE. Posted via Discord API from authenticated browser session. Message ID: 1487572864449249362. Posted by thefron at 3:03 PM 2026-03-28. Screenshot: /tmp/discord-posted.png. Previous note: THIS WAS NOT ACTUALLY DONE IN PREVIOUS ITERATIONS — Ralph falsely marked it complete. YOU MUST ACTUALLY POST TO DISCORD. Do not skip, do not claim it was done before. Step by step: (1) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open https://discord.com/channels/@me (2) Click 'Continue in Browser' (3) Fill email: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal (4) Fill password: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=password --reveal (5) Click Log In (6) MFA: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp (7) Navigate to hackathon server > live-and-updates channel (8) Type and send message (9) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser snapshot -c -d 8 to confirm. See .omx/plans/browser-session-runbook.md for full procedure. CRITICAL: If you cannot complete the Discord posting, you MUST leave passes=false AND write a detailed failure log to progress.txt explaining exactly which step failed and why (e.g. 'agent-browser not found', 'login failed at MFA step', 'channel not found', etc). Include any error output. Take a screenshot of the failure state with agent-browser snapshot if possible. This information is needed for debugging."
     },
     {
       "id": "US-026",
-      "title": "Fix reviews not showing in web UI \u2014 listServices does not include reviews from DB",
+      "title": "Fix reviews not showing in web UI — listServices does not include reviews from DB",
       "description": "As a user, I want to see agent reviews on service cards and the detail panel. Reviews exist in the service_reviews table but listServices returns empty reviews arrays.",
       "acceptanceCriteria": [
         "GET /api/services returns services with their actual reviews from the service_reviews table (not the empty array stored in the payload)",
@@ -313,7 +313,7 @@
       ],
       "priority": 14,
       "passes": true,
-      "notes": "Root cause: listServices() in src/db/repository.ts (line 79) returns payload as-is from the services table. The payload has reviews:[] because submitService stores an empty array. Only getService() calls decorateWithCounts() which JOINs service_reviews. Fix options: (1) make listServices also call decorateWithCounts for each service, or (2) change the web UI to fetch /api/services/:id when selecting a service for detail view (more efficient). Option 2 is better \u2014 add a fetch call in renderDetail() or on card click that hits GET /api/services/{id} and uses the full response. The /api/services/:id endpoint already returns correct reviews via decorateWithCounts()."
+      "notes": "Root cause: listServices() in src/db/repository.ts (line 79) returns payload as-is from the services table. The payload has reviews:[] because submitService stores an empty array. Only getService() calls decorateWithCounts() which JOINs service_reviews. Fix options: (1) make listServices also call decorateWithCounts for each service, or (2) change the web UI to fetch /api/services/:id when selecting a service for detail view (more efficient). Option 2 is better — add a fetch call in renderDetail() or on card click that hits GET /api/services/{id} and uses the full response. The /api/services/:id endpoint already returns correct reviews via decorateWithCounts()."
     },
     {
       "id": "US-027",
@@ -348,16 +348,16 @@
       ],
       "priority": 13,
       "passes": true,
-      "notes": "Key changes in src/db/repository.ts: (1) submitReview() \u2014 after inserting into service_reviews, query all reviews for that service, compute avg score, update the service payload with new agentReviewScore, reviewedByAgent, testedByReviewBot=true, upvotes+1. (2) recordVerifiedInvocation() \u2014 after inserting into verified_invocations, query success count/total/avg latency, update service payload with successRate, latencyMs, endpointStatus, upvotes+1. (3) Add a recalcRanks() method that queries all services, sorts by composite score, and updates rank field in each payload. Call recalcRanks() at the end of both submitReview and recordVerifiedInvocation. Use UPDATE services SET payload = jsonb_set(payload, ...) or just re-write the full payload."
+      "notes": "Key changes in src/db/repository.ts: (1) submitReview() — after inserting into service_reviews, query all reviews for that service, compute avg score, update the service payload with new agentReviewScore, reviewedByAgent, testedByReviewBot=true, upvotes+1. (2) recordVerifiedInvocation() — after inserting into verified_invocations, query success count/total/avg latency, update service payload with successRate, latencyMs, endpointStatus, upvotes+1. (3) Add a recalcRanks() method that queries all services, sorts by composite score, and updates rank field in each payload. Call recalcRanks() at the end of both submitReview and recordVerifiedInvocation. Use UPDATE services SET payload = jsonb_set(payload, ...) or just re-write the full payload."
     },
     {
       "id": "US-029",
-      "title": "Fix detail panel scroll \u2014 panel overflows viewport and cannot be scrolled independently",
+      "title": "Fix detail panel scroll — panel overflows viewport and cannot be scrolled independently",
       "description": "As a user, when I select a service the detail panel content overflows the viewport. It needs independent scrolling.",
       "acceptanceCriteria": [
         "Detail panel has overflow-y: auto so content scrolls within the panel",
         "Detail panel has max-height: calc(100vh - topbar height) so it stays within viewport",
-        "Detail panel position sticky works correctly \u2014 it stays visible while scrolling the feed list",
+        "Detail panel position sticky works correctly — it stays visible while scrolling the feed list",
         "On mobile, detail panel is accessible below the feed and scrolls normally with the page",
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
@@ -371,30 +371,30 @@
       "title": "Add upvote/downvote MCP tools and HTTP API endpoints",
       "description": "As an agent or user, I want to upvote or downvote a service so that community signal drives ranking.",
       "acceptanceCriteria": [
-        "New MCP tool 'upvote_service' accepts serviceId (string, required) and agent (string, optional) \u2014 increments upvotes by 1",
-        "New MCP tool 'downvote_service' accepts serviceId (string, required) and agent (string, optional) \u2014 decrements upvotes by 1 (minimum 0)",
+        "New MCP tool 'upvote_service' accepts serviceId (string, required) and agent (string, optional) — increments upvotes by 1",
+        "New MCP tool 'downvote_service' accepts serviceId (string, required) and agent (string, optional) — decrements upvotes by 1 (minimum 0)",
         "Both tools trigger rank recalculation across all services",
         "New HTTP endpoint POST /api/services/:id/upvote increments upvotes by 1",
         "New HTTP endpoint POST /api/services/:id/downvote decrements upvotes by 1 (minimum 0)",
         "Both endpoints return the updated service with new upvotes count and rank",
-        "Web UI shows upvote (\u25b2) and downvote (\u25bc) buttons on service cards",
-        "Clicking \u25b2 or \u25bc calls the respective API and updates the count without full page reload",
+        "Web UI shows upvote (▲) and downvote (▼) buttons on service cards",
+        "Clicking ▲ or ▼ calls the respective API and updates the count without full page reload",
         "llms.txt is updated to include both upvote_service and downvote_service tools",
         "Typecheck passes",
         "Tests pass"
       ],
       "priority": 14,
       "passes": true,
-      "notes": "Add to src/mcp/server.ts: register 'upvote_service' and 'downvote_service' tools. Add to src/db/repository.ts: voteService(serviceId, direction: 'up'|'down') method \u2014 read payload, adjust upvotes (min 0), write back, recalcRanks(). Add to src/server/index.ts: POST /api/services/:id/upvote and POST /api/services/:id/downvote. Add to web/app.js: \u25b2/\u25bc buttons with click handlers. Update llms.txt."
+      "notes": "Add to src/mcp/server.ts: register 'upvote_service' and 'downvote_service' tools. Add to src/db/repository.ts: voteService(serviceId, direction: 'up'|'down') method — read payload, adjust upvotes (min 0), write back, recalcRanks(). Add to src/server/index.ts: POST /api/services/:id/upvote and POST /api/services/:id/downvote. Add to web/app.js: ▲/▼ buttons with click handlers. Update llms.txt."
     },
     {
       "id": "US-031",
-      "title": "UI polish \u2014 topbar, service names, pagination",
+      "title": "UI polish — topbar, service names, pagination",
       "description": "As a user, I want the page to feel more polished with a bigger brand, glowing human message, clean service names, and pagination.",
       "acceptanceCriteria": [
         "Brand name 'AGENTHUNT' in topbar is larger (at least 20px, was ~16px)",
         "Remove navigation menu links (Leaderboard, Selected, Activity) from topbar entirely",
-        "The 'This page was made for humans' message has a neon glow animation \u2014 pulsing/flickering text-shadow effect using CSS keyframes with green (#00FF88) glow, like a neon sign",
+        "The 'This page was made for humans' message has a neon glow animation — pulsing/flickering text-shadow effect using CSS keyframes with green (#00FF88) glow, like a neon sign",
         "Service names displayed in the UI strip '-like' suffix (e.g. 'Otter-like' shows as 'Otter', 'Granola-like' shows as 'Granola'). Do this in the rendering layer only, not in the DB",
         "Service list shows at most 20 services initially",
         "A 'SHOW MORE' button appears below the list if there are more than 20 services",
@@ -422,13 +422,13 @@
         "MANDATORY: After push, poll Render deploy status until it shows 'live'. Do NOT proceed until production is updated.",
         "MANDATORY: curl https://agenthunt-web.onrender.com/llms.txt | grep upvote must return a match"
       ],
-      "priority": 24,
-      "passes": false,
-      "notes": "Run: git checkout main && git merge ralph/agenthunt-mvp && git push origin main. Then verify Render deploy: source .env && curl -s -H \"Authorization: Bearer $RENDER_API_KEY\" \"https://api.render.com/v1/services/srv-d743cg15pdvs7380qi80/deploys?limit=1\". Wait for status 'live'. Then curl https://agenthunt-web.onrender.com/llms.txt | grep upvote."
+      "priority": 25,
+      "passes": true,
+      "notes": "DONE. Merged ralph/agenthunt-mvp to main (fast-forward), pushed to origin. Deploy dep-d7451ungblsc73fsdj2g live on commit 78f1560. Verified: llms.txt includes upvote_service and downvote_service tools. Health endpoint returns databaseConnected: true."
     },
     {
       "id": "US-033",
-      "title": "Improve Selected Service detail panel \u2014 reorder sections, trim fields, scrollable content",
+      "title": "Improve Selected Service detail panel — reorder sections, trim fields, scrollable content",
       "description": "As a user, the detail panel should prioritize reviews, be scrollable within its container, and show only relevant agent-native fields.",
       "acceptanceCriteria": [
         "Agent reviews section is moved directly below Human translation section (before Agent-native fields)",
@@ -440,7 +440,25 @@
       ],
       "priority": 13,
       "passes": true,
-      "notes": "Changes in web/app.js renderDetail(): (1) Reorder the DOM \u2014 move detailReviews rendering before detailInfoGrid. In index.html, move the 'Agent reviews' section element above the 'Agent-native fields' section. (2) In the infoPairs array (line ~258), remove the entries for: 'Verified invocations', 'Compatible agents', 'Success rate', 'Latency', 'Autonomy', 'Pricing', 'Last checked', 'Auth mode', 'Input formats', 'Output formats'. (3) For scrollable content, the detail-surface or detail-panel in styles.css needs overflow-y: auto and max-height: calc(100vh - 56px). This may overlap with US-029 fix \u2014 check if already applied. DONE: Reviews moved above Agent-native fields, 10 fields removed from info grid, 7 fields kept. Scroll already applied from US-029."
+      "notes": "Changes in web/app.js renderDetail(): (1) Reorder the DOM — move detailReviews rendering before detailInfoGrid. In index.html, move the 'Agent reviews' section element above the 'Agent-native fields' section. (2) In the infoPairs array (line ~258), remove the entries for: 'Verified invocations', 'Compatible agents', 'Success rate', 'Latency', 'Autonomy', 'Pricing', 'Last checked', 'Auth mode', 'Input formats', 'Output formats'. (3) For scrollable content, the detail-surface or detail-panel in styles.css needs overflow-y: auto and max-height: calc(100vh - 56px). This may overlap with US-029 fix — check if already applied. DONE: Reviews moved above Agent-native fields, 10 fields removed from info grid, 7 fields kept. Scroll already applied from US-029."
+    },
+    {
+      "id": "US-034",
+      "title": "Separate scroll for feed list and detail panel — both should scroll independently",
+      "description": "As a user, the left feed list and right detail panel should each have their own scroll, not share the page scroll.",
+      "acceptanceCriteria": [
+        "The main content area (feed + detail) uses a two-column layout where both columns are fixed to viewport height",
+        "Left feed column has its own overflow-y: auto and scrolls independently",
+        "Right detail panel has its own overflow-y: auto and scrolls independently",
+        "Scrolling the feed list does NOT scroll the detail panel and vice versa",
+        "Both columns have max-height: calc(100vh - topbar height - stats row height) or similar to fill remaining viewport",
+        "On mobile, columns stack vertically and scroll normally with the page (no independent scroll)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": "The board-grid or main content container in styles.css needs: both columns set to height: calc(100vh - header) with overflow-y: auto. Remove any overflow/max-height from the parent that causes shared scrolling. The feed-panel and detail-panel each become independently scrollable. Key CSS pattern: .board-grid { display: grid; grid-template-columns: 1fr 1fr; height: calc(100vh - topbar - stats); } .feed-panel, .detail-panel { overflow-y: auto; height: 100%; } On mobile breakpoint, reset to normal flow."
     }
   ]
 }
