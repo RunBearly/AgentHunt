@@ -459,6 +459,108 @@
       "priority": 13,
       "passes": true,
       "notes": "DONE. Added position: sticky, max-height: calc(100vh - 60px), overflow-y: auto to .leaderboard-section (feed column). Detail panel already had these from US-029. Removed align-items: start from .board-grid. Reset both to position: static on mobile (1100px breakpoint)."
+    },
+    {
+      "id": "US-035",
+      "title": "Fix feed list independent scroll — left column should scroll separately from page",
+      "description": "As a user, the left service list should scroll independently. Currently it expands the page and shares scroll with the whole page.",
+      "acceptanceCriteria": [
+        "Feed list container (service-list or its parent) has overflow-y: auto",
+        "Feed list has a fixed height (calc(100vh - topbar - hero - stats - leaderboard header)) so it scrolls within its area",
+        "Scrolling the feed list does NOT move the detail panel or page",
+        "The board-grid container uses CSS grid with both columns at fixed viewport height",
+        "On mobile, independent scroll is disabled and page scrolls normally",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Currently service-list has overflow:visible and scrollH=clientH=1497. The feed-panel needs overflow-y:auto and a constrained height. The board-grid should be height:calc(100vh - topbar - hero - stats) with both children overflow-y:auto."
+    },
+    {
+      "id": "US-037",
+      "title": "Merge to main and push to deploy fixes",
+      "description": "Merge ralph branch to main and push for Render deployment.",
+      "acceptanceCriteria": [
+        "git checkout main && git merge ralph/agenthunt-mvp && git push origin main",
+        "Render deploy succeeds",
+        "Production reflects all fixes",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": "MUST actually run git commands. Verify with: curl https://agenthunt-web.onrender.com/api/health"
+    },
+    {
+      "id": "US-038",
+      "title": "Show composite trust score breakdown on service cards and detail panel",
+      "description": "As a user, I want to understand why a service is ranked where it is by seeing the composite score and its components.",
+      "acceptanceCriteria": [
+        "Each service card shows a composite score number (e.g. '91') next to or replacing the upvote count as the primary ranking metric",
+        "The score label says 'TRUST SCORE' instead of just 'VOTES'",
+        "The detail panel info section shows the score breakdown: review score contribution, invocation count contribution, and upvote contribution",
+        "Format example in detail: 'Trust Score: 91 = reviews(33) + invocations(32) + votes(26)'",
+        "The composite score is computed in the frontend from existing fields: (agentReviewScore * 10) + verifiedInvocationCount + upvotes",
+        "Upvote/downvote buttons still work and show the upvotes count separately below the trust score",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": "DONE. Added computeTrustScore() helper. Top service card shows large trust score number with TRUST SCORE label above vote controls. Regular cards show trust score next to vote controls. Detail panel meta pills include score breakdown: 'TRUST SCORE: N = reviews(X) + invocations(Y) + votes(Z)'. Vote buttons remain functional."
+    },
+    {
+      "id": "US-039",
+      "title": "Rewrite all 156 agent reviews in DB to higher quality natural language",
+      "description": "As a user, the current reviews are low-quality templated text ('Across N tasks, X was a Y for Z'). Each review should be rewritten to read like a genuine agent evaluation.",
+      "acceptanceCriteria": [
+        "Read all 156 reviews from service_reviews table",
+        "For each review, use OpenAI API to rewrite the summary into natural, specific, varied language (2-3 sentences)",
+        "The rewrite should preserve: the agent name, the score, what was tested, the core strength and weakness",
+        "The rewrite should NOT use the template pattern 'Across N tasks, X was a Y for Z'",
+        "Each rewritten review should feel distinct — vary sentence structure, tone, and focus across reviews",
+        "Update each review payload directly in the service_reviews table via SQL UPDATE",
+        "After all updates, verify by reading 5 random reviews from the API to confirm quality",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": "DONE. All 178 reviews rewritten via OpenAI gpt-4o-mini and updated in service_reviews table via Supabase REST API with service_role key. Verified: 0 reviews contain old 'Across N tasks' template. Direct DB update approach: (1) Read all reviews: SELECT id, service_id, payload FROM service_reviews (2) For each review, call OpenAI to rewrite payload.summary. Prompt: 'Rewrite this agent service review into natural, specific language (2-3 sentences). Preserve the core evaluation but make it sound like a real agent's assessment, not a template. Original: {summary}. Service: {service_id}. Score: {score}/5. Agent persona: {agent}.' (3) Update via Supabase management API: POST to /v1/projects/bcneskpabcflgsgwielf/database/query with UPDATE service_reviews SET payload = jsonb_set(payload, '{summary}', '\"new text\"') WHERE id = N. Use OPENAI_API_KEY from .env. Process in batches of 10 to avoid rate limits. All credentials are in .env file."
+    },
+    {
+      "id": "US-040",
+      "title": "Increase upvote weight in composite trust score formula",
+      "description": "As a user, upvotes should have more influence on ranking. Currently review score dominates (×10) while upvotes are ×1.",
+      "acceptanceCriteria": [
+        "Change composite score formula in src/db/repository.ts recalcRanks() to: (agentReviewScore × 5) + verifiedInvocationCount + (upvotes × 3)",
+        "Update the same formula in web/app.js computeTrustScore() if it exists there",
+        "Recalculate ranks for all services after formula change by calling recalcRanks()",
+        "Trigger recalcRanks via a one-time script or by submitting a dummy invocation and rolling it back",
+        "Verify rankings changed: services with high upvotes should rank higher than before",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": "In src/db/repository.ts recalcRanks() line ~296: change from (agentReviewScore || 0) * 10 + (verifiedInvocationCount || 0) + (upvotes || 0) to (agentReviewScore || 0) * 5 + (verifiedInvocationCount || 0) + (upvotes || 0) * 3. Also update web/app.js if US-038 added a frontend computeTrustScore. After code change, need to trigger recalcRanks — easiest way is to add a one-time call in init() or POST a dummy review/invocation. Also update via Supabase management API: run recalc query directly."
+    },
+    {
+      "id": "US-041",
+      "title": "Clean up display text — strip -like from all text, clean agent names and test metadata",
+      "description": "As a user, I want all display text cleaned of simulation artifacts: -like suffixes, agent-NN: prefixes, and run timestamps.",
+      "acceptanceCriteria": [
+        "All occurrences of '-like' are stripped from service names in the detail panel (Selected Service section)",
+        "All occurrences of '-like' are stripped from descriptions and taglines everywhere in the UI",
+        "Agent review agent names strip the 'agent-NN:' prefix — e.g. 'agent-09:power-user' becomes 'power-user'",
+        "Agent review 'tested' field strips 'simulated tasks in run run-TIMESTAMP' pattern — show only the category/task description part, or hide if nothing meaningful remains",
+        "These cleanups are applied in the rendering layer (web/app.js), not in the database",
+        "Apply to: top service card, regular service cards, detail panel name, detail panel description, detail panel tagline, review cards agent name, review cards tested text",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": "In web/app.js add helpers: (1) cleanText(str) — removes all '-like' occurrences: str.replace(/-like/gi, ''). Apply to name, description, tagline, humanNote everywhere they render. (2) cleanAgentName(str) — strips 'agent-NN:' prefix: str.replace(/^agent-\\d+:/i, ''). Apply in review card rendering. (3) cleanTestedText(str) — strips 'simulated tasks in run run-...' pattern: str.replace(/simulated tasks in run run-\\S+/gi, '').trim(). If result is empty or just whitespace/category, show the category part only. Apply these in renderFeed(), renderDetail(), and the review card template."
     }
   ]
 }

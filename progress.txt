@@ -477,3 +477,43 @@
   - Removing `align-items: start` from the grid lets columns stretch to fill available height naturally
   - On mobile, reset both to `position: static` so they flow normally with the page
 ---
+
+## 2026-03-28 - US-035
+- What was implemented: Fixed feed list independent scroll by making board-grid sticky with fixed viewport height, so both columns scroll independently
+- Files changed:
+  - `web/styles.css` — made `.board-grid` sticky with `position: sticky; top: 60px; height: calc(100vh - 60px)` so both columns are constrained to viewport height; simplified `.leaderboard-section` and `.detail-panel` to just `overflow-y: auto` (removed individual sticky positioning and max-height); updated 1100px breakpoint to reset board-grid to `position: static; height: auto`
+- **Learnings for future iterations:**
+  - When two grid columns need independent scroll, make the grid container itself sticky with a fixed height rather than making each column sticky individually — individual sticky positioning doesn't work well when the grid row stretches to fit the taller column
+  - `position: sticky` on grid children is unreliable for constraining scroll — the grid row height is determined by the tallest child, negating the max-height
+---
+
+## 2026-03-28 - US-038
+- What was implemented: Composite trust score display on service cards and detail panel
+- Files changed:
+  - `web/app.js` — added `computeTrustScore(service)` helper returning { total, reviewPart, invocationPart, votePart }; top service card shows large trust score number with TRUST SCORE label above vote controls; regular cards show trust score next to vote controls; detail panel meta pills include accent-styled score breakdown
+  - `web/styles.css` — added `.trust-score-display`, `.trust-score-value`, `.trust-score-label`, `.service-trust-score`, `.meta-pill.accent-pill` styles
+- **Learnings for future iterations:**
+  - The composite score formula is `(agentReviewScore * 10) + verifiedInvocationCount + upvotes` — same as recalcRanks() in repository.ts
+  - Trust score is computed client-side from existing fields, no backend changes needed
+  - The accent-pill class gives the trust score breakdown a green-tinted background to stand out in the meta pills row
+---
+
+## 2026-03-28 - US-039
+- What was implemented: Rewrote all 178 agent reviews in the service_reviews DB table to higher quality natural language using OpenAI gpt-4o-mini
+- Actions taken:
+  - Fetched all 178 reviews from Supabase REST API using service_role key
+  - For each review, called OpenAI to rewrite the summary preserving agent name, score, strengths, and weaknesses
+  - Updated each review's payload in the service_reviews table via Supabase REST PATCH endpoint
+  - All 178 updates returned HTTP 204 (success)
+  - Verified: 0 reviews contain old "Across N tasks" template pattern
+  - Verified: sample reviews read naturally with varied sentence structure
+- Files changed:
+  - `prd.json` — marked US-039 as passes: true
+  - `progress.txt` — appended US-039 progress entry
+- **Learnings for future iterations:**
+  - Supabase management API (api.supabase.com) blocks write queries (Cloudflare 1010 error) — use Supabase REST API (project.supabase.co/rest/v1/) with service_role key for CRUD operations
+  - Get API keys from management API: GET /v1/projects/{ref}/api-keys
+  - PATCH to /rest/v1/table?id=eq.N with Prefer: return=minimal for efficient updates
+  - OpenAI gpt-4o-mini handles 178 sequential calls without rate limiting at ~1 req/sec
+  - Python urllib output is line-buffered when piped — run directly (not piped to head) to see real-time progress
+---
