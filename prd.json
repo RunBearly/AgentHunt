@@ -203,7 +203,7 @@
         "Typecheck passes"
       ],
       "priority": 13,
-      "passes": false,
+      "passes": true,
       "notes": "Must re-verify after US-009/010/011 changes are deployed. Actual production URL is https://agenthunt-web.onrender.com. Curl each endpoint: /api/health, /api/services (should return real services not mock), /mcp, /llms.txt, /. Update README.md and llms.txt if URL still says agenthunt.onrender.com (it does — fix to agenthunt-web.onrender.com)."
     },
     {

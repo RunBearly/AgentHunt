@@ -182,3 +182,19 @@
   - POST /api/services requires `x-admin-write-token` header and accepts fields: name, tagline, description, mcpEndpoint, category, capabilities[], providerAgentName, authMode, pricingModel
   - The submit_service MCP tool schema in src/mcp/server.ts matches the REST API body schema
 ---
+
+## 2026-03-28 - US-013
+- What was implemented: Re-verified all 5 production endpoints after US-009/010/011 changes deployed
+- Production verification results:
+  - GET /api/health → status ok, database connected ✓
+  - GET /api/services → returns 3 real services (not mock data) ✓
+  - POST /mcp → responds with valid JSON-RPC initialize response ✓
+  - GET /llms.txt → 200 OK, 3197 bytes ✓
+  - GET / → 200 OK, web UI served ✓
+- README.md already had correct production URL (agenthunt-web.onrender.com) — no changes needed
+- Files changed:
+  - `prd.json` — marked US-013 as passes: true
+  - `progress.txt` — appended US-013 progress entry
+- **Learnings for future iterations:**
+  - After data migration (removing mock, adding real data), always re-verify all endpoints to confirm the deployed version reflects changes
+---
