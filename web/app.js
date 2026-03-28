@@ -196,6 +196,7 @@ function renderFeed() {
       state.selectedId = card.dataset.serviceId;
       renderFeed();
       renderDetail();
+      fetchServiceDetail(card.dataset.serviceId);
     });
   });
 }
@@ -331,6 +332,23 @@ function renderDetail() {
     .join("");
 }
 
+async function fetchServiceDetail(serviceId) {
+  try {
+    const response = await fetch(`/api/services/${encodeURIComponent(serviceId)}`);
+    if (!response.ok) return;
+    const detail = await response.json();
+    const idx = services.findIndex((s) => s.id === serviceId);
+    if (idx !== -1) {
+      services[idx] = { ...services[idx], ...detail };
+    }
+    if (state.selectedId === serviceId) {
+      renderDetail();
+    }
+  } catch (e) {
+    console.warn("Failed to fetch service detail", e);
+  }
+}
+
 function render() {
   renderFilters();
   renderStats();
@@ -352,6 +370,9 @@ async function hydrateFromApi() {
     loadError = true;
   }
   render();
+  if (state.selectedId) {
+    fetchServiceDetail(state.selectedId);
+  }
 }
 
 hydrateFromApi();
