@@ -23,8 +23,7 @@ const detailDescription = document.getElementById("detail-description");
 const detailHumanNote = document.getElementById("detail-human-note");
 const detailInfoGrid = document.getElementById("detail-info-grid");
 const detailCapabilities = document.getElementById("detail-capabilities");
-const detailProtocol = document.getElementById("detail-protocol");
-const detailUsageExample = document.getElementById("detail-usage-example");
+const detailMcpConnect = document.getElementById("detail-mcp-connect");
 const detailToolCount = document.getElementById("detail-tool-count");
 const detailReviews = document.getElementById("detail-reviews");
 const detailReviewSummary = document.getElementById("detail-review-summary");
@@ -267,8 +266,7 @@ function renderDetail() {
     detailHumanNote.textContent = "";
     detailInfoGrid.innerHTML = "";
     detailCapabilities.innerHTML = "";
-    detailProtocol.textContent = "";
-    detailUsageExample.textContent = "";
+    detailMcpConnect.innerHTML = "";
     detailReviews.innerHTML = "";
     detailActivity.innerHTML = "";
     detailMeta.innerHTML = "";
@@ -333,19 +331,56 @@ function renderDetail() {
     .map((c) => `<span class="tag">${c}</span>`)
     .join("");
 
-  detailProtocol.textContent = JSON.stringify(
-    {
-      endpoint: service.mcpEndpoint ?? "",
-      schemaVersion: service.schemaVersion ?? "",
-      authMode: service.authMode ?? "",
-      sampleTool: (service.toolNames ?? [])[0] ?? "",
-      sampleNeed: service.usageExample ?? ""
-    },
-    null,
-    2
-  );
+  const mcpEndpoint = service.mcpEndpoint || "https://agenthunt-web.onrender.com/mcp";
+  const toolNames = (service.toolNames ?? []).slice(0, 5);
+  const authMode = service.authMode ?? "none";
+  const usageEx = service.usageExample ?? service.tagline ?? "";
 
-  detailUsageExample.textContent = service.usageExample ?? "";
+  detailMcpConnect.innerHTML = `
+    <div class="mcp-guide">
+      <div class="mcp-step">
+        <span class="mcp-step-num">1</span>
+        <div>
+          <p class="mcp-step-title">Endpoint</p>
+          <code class="mcp-code-inline">${mcpEndpoint}</code>
+        </div>
+      </div>
+      <div class="mcp-step">
+        <span class="mcp-step-num">2</span>
+        <div>
+          <p class="mcp-step-title">Connect from your agent</p>
+          <div class="mcp-clients">
+            <div class="mcp-client">
+              <span class="mcp-client-name">Claude Code</span>
+              <pre class="mcp-code">claude mcp add --transport http ${service.id} ${mcpEndpoint}</pre>
+            </div>
+            <div class="mcp-client">
+              <span class="mcp-client-name">Cursor / VS Code</span>
+              <pre class="mcp-code">{ "mcpServers": { "${service.id}": { "url": "${mcpEndpoint}" } } }</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mcp-step">
+        <span class="mcp-step-num">3</span>
+        <div>
+          <p class="mcp-step-title">Available tools</p>
+          <div class="mcp-tools">${toolNames.map(t => `<code class="mcp-tool-tag">${t}</code>`).join("")}${service.toolCount > 5 ? `<span class="mcp-more">+${service.toolCount - 5} more</span>` : ""}</div>
+        </div>
+      </div>
+      ${usageEx ? `<div class="mcp-step">
+        <span class="mcp-step-num">⚡</span>
+        <div>
+          <p class="mcp-step-title">Try it</p>
+          <p class="mcp-usage">"${usageEx}"</p>
+        </div>
+      </div>` : ""}
+      <div class="mcp-meta-row">
+        <span>Auth: <strong>${authMode}</strong></span>
+        <span>Schema: <strong>${service.schemaVersion ?? "—"}</strong></span>
+      </div>
+    </div>`;
+
 
   detailReviews.innerHTML = (service.reviews ?? [])
     .map(
