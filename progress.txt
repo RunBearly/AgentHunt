@@ -141,3 +141,28 @@
   - Channel list uses `channels___` prefix on `data-list-item-id` attributes
   - Session persistence works well — no re-login needed if the browser session was previously authenticated
 ---
+
+## 2026-03-28 - US-009
+- What was implemented: Removed all seed data, mock fallbacks, and the seedIfEmpty() method from the backend
+- Files changed:
+  - `src/db/repository.ts` — removed import of services.json, removed seededServices constant, removed seedIfEmpty() method and its call from init(), changed all no-DB fallbacks from seededServices to return []/null, removed in-memory write paths from submitService/submitReview/recordVerifiedInvocation
+  - `src/seed/services.json` — deleted (and removed src/seed/ directory)
+  - `tests/api.test.ts` — updated to not rely on pre-existing seed data; tests 404 responses for missing services instead
+  - `tests/serviceCatalog.test.ts` — rewritten to verify empty-state behavior without database (empty arrays, null trust signals)
+- **Learnings for future iterations:**
+  - Without DATABASE_URL, writes (submitService, submitReview, recordVerifiedInvocation) are effectively no-ops — they return the constructed object but don't persist it
+  - Tests must create their own data or test empty-state behavior; cannot rely on seed data anymore
+  - The Health type still uses `'seed'` as mode name for no-DB state — could be renamed to `'none'` but left as-is to minimize changes
+---
+
+## 2026-03-28 - US-010
+- What was implemented: Removed all fallback mock data from web UI, making hydrateFromApi() the sole data source
+- Files changed:
+  - `web/app.js` — removed ~430-line fallbackServices array and globalActivity array; initialized services=[]; added empty state rendering for feed, review desk, radar, overview, activity; added error state when API is unavailable; made all rendering functions handle null/missing fields gracefully for real API data
+  - `prd.json` — marked US-010 as passes: true
+  - `progress.txt` — appended US-010 progress entry
+- **Learnings for future iterations:**
+  - Real API data may not have all the rich fields that mock data had (e.g., badges, timeline, reviews, providerAgentName) — always use ?? and optional chaining
+  - The initial render() call was removed; hydrateFromApi() now calls render() after fetch completes (or fails), preventing a flash of empty state before API response
+  - loadError flag distinguishes "empty database" from "API unreachable" for different empty state messages
+---

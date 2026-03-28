@@ -127,6 +127,55 @@
     },
     {
       "id": "US-009",
+      "title": "Remove seed data and mock fallbacks from backend",
+      "description": "As a developer, I want to remove all mock/seed data so the app only shows real data from the database.",
+      "acceptanceCriteria": [
+        "Remove seedIfEmpty() method and its call from init() in src/db/repository.ts",
+        "Remove import of src/seed/services.json from repository.ts",
+        "Remove seededServices constant and all references to it",
+        "When DB is connected but empty, listServices returns empty array",
+        "When DB is not connected, all read methods return empty arrays or null (no fallback mock data)",
+        "submitService/submitReview/recordVerifiedInvocation still work in DB mode",
+        "Delete src/seed/services.json file",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 9,
+      "passes": true,
+      "notes": "DB seed data was already cleared from Supabase via management API. Now remove the code that would re-seed on next restart. Key files: src/db/repository.ts (remove seedIfEmpty, seededServices, import of services.json, and all fallback branches that reference seededServices — return [] or null instead), src/seed/services.json (delete file)."
+    },
+    {
+      "id": "US-010",
+      "title": "Remove fallback mock data from web UI",
+      "description": "As a user, I want the web UI to only show data from the API, with a proper empty state when no services exist.",
+      "acceptanceCriteria": [
+        "Remove the fallbackServices array from web/app.js (the large array of mock MeshRouter, PDF Ghost, etc.)",
+        "Remove the globalActivity mock array from web/app.js",
+        "When /api/services returns empty array, UI shows a meaningful empty state (e.g. \"No services yet — submit one via the MCP endpoint\")",
+        "When API is unavailable, UI shows a loading/error state instead of mock data",
+        "hydrateFromApi() is the only data source",
+        "Typecheck passes"
+      ],
+      "priority": 10,
+      "passes": true,
+      "notes": "web/app.js has a ~400 line fallbackServices array and a globalActivity array. Remove both. Initialize services=[] and add empty state rendering. The render() functions need to handle empty arrays gracefully (no crashes on services[0] being undefined, etc.)."
+    },
+    {
+      "id": "US-011",
+      "title": "Submit real MCP services to the database via API",
+      "description": "As a user, I want to see real, actually-existing MCP services listed on AgentHunt instead of fictional ones.",
+      "acceptanceCriteria": [
+        "At least 3 real MCP services are submitted via POST /api/services on the production deployment",
+        "Each service has a real MCP endpoint URL, real name, real description, and real capabilities",
+        "Services are visible on the production web UI and via GET /api/services",
+        "Typecheck passes"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": "Use curl to POST real MCP services to https://agenthunt-web.onrender.com/api/services (with x-admin-write-token header from .env ADMIN_WRITE_TOKEN). Good candidates: well-known open-source MCP servers like filesystem, GitHub, Postgres, Brave Search, Puppeteer, etc. from the official MCP servers list. Use real endpoint URLs (e.g. npx -y @modelcontextprotocol/server-github for GitHub MCP). After submitting, verify they appear on GET /api/services."
+    },
+    {
+      "id": "US-012",
       "title": "Set Render environment variables and trigger deploy",
       "description": "As an operator, I need Render env vars (OPENAI_API_KEY, DATABASE_URL or SUPABASE_PROJECT_REF+SUPABASE_DB_PASSWORD, ADMIN_WRITE_TOKEN) configured and a deploy triggered.",
       "acceptanceCriteria": [
@@ -136,12 +185,12 @@
         "GET /api/health on the production URL returns status ok",
         "Typecheck passes"
       ],
-      "priority": 9,
+      "priority": 12,
       "passes": true,
       "notes": "DONE. Render service srv-d743cg15pdvs7380qi80 exists with all env vars set. AutoDeploy on, build in progress. Actual URL: https://agenthunt-web.onrender.com (not agenthunt.onrender.com)."
     },
     {
-      "id": "US-010",
+      "id": "US-013",
       "title": "Verify production endpoints and update README with final URL",
       "description": "As a developer, I need to confirm the production deployment works and update README if the actual Render URL differs from the placeholder.",
       "acceptanceCriteria": [
@@ -153,12 +202,12 @@
         "README.md production URL matches the actual deployed URL",
         "Typecheck passes"
       ],
-      "priority": 10,
-      "passes": true,
-      "notes": "IMPORTANT: Actual production URL is https://agenthunt-web.onrender.com (NOT agenthunt.onrender.com as in README). Must update all references in README.md and llms.txt to use agenthunt-web.onrender.com. After updating, commit and push to main. Then curl each endpoint to verify: /api/health, /api/services, /mcp (POST JSON-RPC), /llms.txt, /."
+      "priority": 13,
+      "passes": false,
+      "notes": "Must re-verify after US-009/010/011 changes are deployed. Actual production URL is https://agenthunt-web.onrender.com. Curl each endpoint: /api/health, /api/services (should return real services not mock), /mcp, /llms.txt, /. Update README.md and llms.txt if URL still says agenthunt.onrender.com (it does — fix to agenthunt-web.onrender.com)."
     },
     {
-      "id": "US-011",
+      "id": "US-014",
       "title": "Prepare and post Discord launch announcement",
       "description": "As a project maintainer, I need a Discord launch announcement drafted and posted to the designated channel.",
       "acceptanceCriteria": [
@@ -166,9 +215,9 @@
         "Announcement is posted to the designated Discord channel",
         "Typecheck passes"
       ],
-      "priority": 11,
-      "passes": true,
-      "notes": "Use agent-browser with session name 'agenthunt'. Discord credentials in 1Password: item id vs5kl724kiho3nfuj4xdm5gtwi (vault Employee). Login flow: open https://discord.com/channels/@me -> login with password -> MFA via 'Verify with something else' -> 'Use your authenticator app' -> OTP from 1Password. Navigate to the hackathon server's live-and-updates channel and post. Commands: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal, --fields label=password --reveal, --otp. Browser: AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open <url>. See .omx/plans/browser-session-runbook.md for full procedure."
+      "priority": 14,
+      "passes": false,
+      "notes": "Use agent-browser with session name 'agenthunt'. Discord credentials in 1Password: item id vs5kl724kiho3nfuj4xdm5gtwi (vault Employee). Login flow: open https://discord.com/channels/@me -> login with password -> MFA via 'Verify with something else' -> 'Use your authenticator app' -> OTP from 1Password. Navigate to the hackathon server's live-and-updates channel and post. Commands: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal, --fields label=password --reveal, --otp. Browser: AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open <url>. See .omx/plans/browser-session-runbook.md for full procedure. Post AFTER US-013 confirms all production endpoints work with real data."
     }
   ]
 }
