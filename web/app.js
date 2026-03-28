@@ -297,23 +297,13 @@ function renderDetail() {
   detailMeta.innerHTML = metaPills.join("");
 
   const infoPairs = [
-    ["Verified invocations", service.verifiedInvocationCount ?? 0],
-    ["Self-reported", service.selfReportedInvocationCount ?? 0],
-    ["Trust label", service.trustLabel ?? "unknown"],
     ["Provider agent", service.providerAgentName ?? "\u2014"],
     ["Provider type", service.providerAgentType ?? "\u2014"],
     ["Schema version", service.schemaVersion ?? "\u2014"],
     ["MCP endpoint", service.mcpEndpoint ?? "\u2014"],
     ["Tool names", (service.toolNames ?? []).join(", ") || "\u2014"],
-    ["Compatible agents", service.compatibleAgentTypes ?? "\u2014"],
-    ["Success rate", service.successRate != null ? `${service.successRate}%` : "\u2014"],
-    ["Latency", service.latencyMs != null ? `${service.latencyMs} ms` : "\u2014"],
-    ["Auth mode", service.authMode ?? "\u2014"],
-    ["Autonomy", service.autonomyLevel ?? "\u2014"],
-    ["Input formats", service.inputFormats ?? "\u2014"],
-    ["Output formats", service.outputFormats ?? "\u2014"],
-    ["Pricing", service.pricingModel ?? "\u2014"],
-    ["Last checked", service.lastCheckedAt ?? "\u2014"]
+    ["Self-reported", service.selfReportedInvocationCount ?? 0],
+    ["Trust label", service.trustLabel ?? "unknown"]
   ];
 
   detailInfoGrid.innerHTML = infoPairs

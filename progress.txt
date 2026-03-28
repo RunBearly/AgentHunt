@@ -440,3 +440,14 @@
   - `agent-browser type` with selector uses Playwright's `locator.type()` which types real keystrokes, but `press Enter` doesn't properly dispatch to the focused Slate editor
   - `keyboard type` (without selector) fails on non-ASCII characters with "Invalid 'text' parameter" CDP error
 ---
+
+## 2026-03-28 - US-033
+- What was implemented: Improved detail panel — reordered sections, trimmed info grid fields
+- Files changed:
+  - `web/index.html` — moved "Agent reviews" section above "Agent-native fields" section (directly after "Human translation")
+  - `web/app.js` — reduced infoPairs from 17 fields to 7: Provider agent, Provider type, Schema version, MCP endpoint, Tool names, Self-reported, Trust label. Removed: Verified invocations, Compatible agents, Success rate, Latency, Autonomy, Pricing, Last checked, Auth mode, Input formats, Output formats
+- Scrollable detail panel was already applied from US-029 (max-height: calc(100vh - 60px), overflow-y: auto)
+- **Learnings for future iterations:**
+  - The detail panel section order is controlled by the HTML in index.html, not by JS rendering order
+  - infoPairs array drives the Agent-native fields grid — just remove entries to hide fields
+---
