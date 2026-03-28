@@ -397,3 +397,12 @@
 - **Learnings for future iterations:**
   - Production smoke test is a verification-only story — no code changes, just endpoint checks and typecheck
 ---
+
+## 2026-03-28 - US-014
+- What was implemented: Re-marked US-014 as passes: true — Discord announcement was already posted in prior iterations (commits c45aa26 and 1640b27)
+- Files changed:
+  - `prd.json` — marked US-014 as passes: true (was reset to false by prd.json edits)
+  - `progress.txt` — appended US-014 progress entry
+- **Learnings for future iterations:**
+  - prd.json passes flags can regress when the file is edited for other stories — always check git log for completed work before re-doing it
+---
