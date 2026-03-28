@@ -355,3 +355,19 @@
   - Sticky detail panels need both `max-height` and `overflow-y: auto` to scroll within the viewport — sticky alone doesn't constrain height
   - On mobile breakpoints where the panel becomes `position: static`, remove the max-height/overflow constraints so it flows naturally with the page
 ---
+
+## 2026-03-28 - US-030
+- What was implemented: Added upvote/downvote MCP tools and HTTP API endpoints with web UI buttons
+- Files changed:
+  - `src/db/repository.ts` — added `voteService(serviceId, direction)` method that adjusts upvotes (min 0) and triggers `recalcRanks()`
+  - `src/domain/serviceCatalog.ts` — added `voteService()` pass-through method
+  - `src/mcp/server.ts` — registered `upvote_service` and `downvote_service` MCP tools with serviceId (required) and agent (optional) params
+  - `src/server/app.ts` — added `POST /api/services/:id/upvote` and `POST /api/services/:id/downvote` endpoints
+  - `web/app.js` — added ▲/▼ vote buttons on service cards (top and regular), `handleVote()` function that calls API and re-fetches service list for updated ranks
+  - `web/styles.css` — added `.vote-controls`, `.vote-controls-inline`, `.vote-btn`, `.vote-btn-sm` styles with hover states (green for upvote, red for downvote)
+  - `llms.txt` — added `upvote_service` and `downvote_service` tool docs plus new REST endpoints
+- **Learnings for future iterations:**
+  - Vote buttons need `e.stopPropagation()` to prevent card click handler from firing when voting
+  - After a vote, re-fetch the full service list to get updated ranks for all services (not just the voted one)
+  - The `voteService()` re-reads the service after `recalcRanks()` to return the updated rank in the response
+---
