@@ -195,6 +195,30 @@ export class AgentHuntRepository {
 
     if (this.pool) {
       await this.pool.query('insert into service_reviews (service_id, payload) values ($1, $2::jsonb)', [input.serviceId, JSON.stringify(review)]);
+
+      // Update service payload with review aggregates
+      const serviceRow = await this.pool.query<{ payload: ServiceRecord }>('select payload from services where id = $1', [input.serviceId]);
+      if (serviceRow.rowCount) {
+        const payload = serviceRow.rows[0].payload;
+        const allReviews = await this.pool.query<{ payload: { score: number; agent: string } }>(
+          'select payload from service_reviews where service_id = $1 order by id desc',
+          [input.serviceId]
+        );
+        const scores = allReviews.rows.map(r => r.payload.score);
+        const avgScore = scores.length > 0 ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10 : 0;
+
+        payload.agentReviewScore = avgScore;
+        payload.reviewedByAgent = input.agent;
+        payload.testedByReviewBot = true;
+        payload.upvotes = (payload.upvotes || 0) + 1;
+
+        await this.pool.query(
+          'update services set payload = $1::jsonb, updated_at = now() where id = $2',
+          [JSON.stringify(payload), input.serviceId]
+        );
+      }
+
+      await this.recalcRanks();
     }
     return review;
   }
@@ -206,8 +230,63 @@ export class AgentHuntRepository {
         'insert into verified_invocations (service_id, agent, success, latency_ms) values ($1, $2, $3, $4)',
         [input.serviceId, input.agent || 'unknown-agent', input.success ?? true, input.latencyMs ?? null]
       );
+
+      // Update service payload with invocation aggregates
+      const serviceRow = await this.pool.query<{ payload: ServiceRecord }>('select payload from services where id = $1', [input.serviceId]);
+      if (serviceRow.rowCount) {
+        const payload = serviceRow.rows[0].payload;
+        const stats = await this.pool.query<{ total: string; successful: string; avg_latency: string }>(
+          `select count(*)::text as total,
+                  count(*) filter (where success = true)::text as successful,
+                  coalesce(avg(latency_ms) filter (where latency_ms is not null), 0)::text as avg_latency
+           from verified_invocations where service_id = $1`,
+          [input.serviceId]
+        );
+        const total = Number(stats.rows[0].total);
+        const successful = Number(stats.rows[0].successful);
+        const avgLatency = Math.round(Number(stats.rows[0].avg_latency));
+
+        payload.successRate = total > 0 ? Math.round((successful / total) * 100) : 0;
+        payload.latencyMs = avgLatency;
+        payload.endpointStatus = (input.success ?? true) ? 'Live' : 'Degraded';
+        payload.upvotes = (payload.upvotes || 0) + 1;
+        payload.verifiedInvocationCount = successful;
+        payload.lastCheckedAt = new Date().toISOString();
+
+        await this.pool.query(
+          'update services set payload = $1::jsonb, updated_at = now() where id = $2',
+          [JSON.stringify(payload), input.serviceId]
+        );
+      }
+
+      await this.recalcRanks();
     }
     return this.getTrustSignals(input.serviceId);
+  }
+
+  private async recalcRanks() {
+    if (!this.pool) return;
+    const rows = await this.pool.query<{ id: string; payload: ServiceRecord }>('select id, payload from services');
+    const services = rows.rows.map(r => ({ id: r.id, payload: r.payload }));
+
+    // Sort by composite score descending
+    services.sort((a, b) => {
+      const scoreA = (a.payload.agentReviewScore || 0) * 10 + (a.payload.verifiedInvocationCount || 0) + (a.payload.upvotes || 0);
+      const scoreB = (b.payload.agentReviewScore || 0) * 10 + (b.payload.verifiedInvocationCount || 0) + (b.payload.upvotes || 0);
+      return scoreB - scoreA;
+    });
+
+    // Update rank for each service
+    for (let i = 0; i < services.length; i++) {
+      const newRank = i + 1;
+      if (services[i].payload.rank !== newRank) {
+        services[i].payload.rank = newRank;
+        await this.pool.query(
+          'update services set payload = $1::jsonb, updated_at = now() where id = $2',
+          [JSON.stringify(services[i].payload), services[i].id]
+        );
+      }
+    }
   }
 
   private async decorateWithCounts(service: ServiceRecord): Promise<ServiceRecord> {
