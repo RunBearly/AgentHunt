@@ -137,8 +137,8 @@
         "Typecheck passes"
       ],
       "priority": 9,
-      "passes": false,
-      "notes": "Use Render API or dashboard. Render project ID: prj-d7423pjuibrs73cn9jag. Supabase project ref: bcneskpabcflgsgwielf."
+      "passes": true,
+      "notes": "DONE. Render service srv-d743cg15pdvs7380qi80 exists with all env vars set. AutoDeploy on, build in progress. Actual URL: https://agenthunt-web.onrender.com (not agenthunt.onrender.com)."
     },
     {
       "id": "US-010",
@@ -155,7 +155,7 @@
       ],
       "priority": 10,
       "passes": false,
-      "notes": "If Render assigns a different URL than agenthunt.onrender.com, update README and llms.txt accordingly."
+      "notes": "IMPORTANT: Actual production URL is https://agenthunt-web.onrender.com (NOT agenthunt.onrender.com as in README). Must update all references in README.md and llms.txt to use agenthunt-web.onrender.com. After updating, commit and push to main. Then curl each endpoint to verify: /api/health, /api/services, /mcp (POST JSON-RPC), /llms.txt, /."
     },
     {
       "id": "US-011",
@@ -168,7 +168,7 @@
       ],
       "priority": 11,
       "passes": false,
-      "notes": "PRD lists Discord announcement as a launch artifact. May need browser session or webhook."
+      "notes": "Use agent-browser with session name 'agenthunt'. Discord credentials in 1Password: item id vs5kl724kiho3nfuj4xdm5gtwi (vault Employee). Login flow: open https://discord.com/channels/@me -> login with password -> MFA via 'Verify with something else' -> 'Use your authenticator app' -> OTP from 1Password. Navigate to the hackathon server's live-and-updates channel and post. Commands: op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal, --fields label=password --reveal, --otp. Browser: AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open <url>. See .omx/plans/browser-session-runbook.md for full procedure."
     }
   ]
 }

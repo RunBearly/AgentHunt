@@ -7,6 +7,8 @@
 - `createMcpExpressApp()` from the SDK adds body-parsing middleware that conflicts with `express.json()` — use plain `express()` instead when manual MCP handling is in place
 - Tests use Node built-in test runner (`node:test`) with `tsx` for TypeScript — run via `npm test`
 - Without DATABASE_URL, the repository falls back to in-memory seed data (good for tests)
+- Supabase direct connections (`db.{ref}.supabase.co`) use IPv6 — on Render, use the pooler at `aws-0-{region}.pooler.supabase.com:6543` with username `postgres.{ref}`
+- Render service URL: https://agenthunt-web.onrender.com | Service ID: srv-d743cg15pdvs7380qi80
 
 ---
 
@@ -86,4 +88,21 @@
   - PR #1 was already created as a draft during initial branch setup — just needed `gh pr ready` then `gh pr merge --merge`
   - render.yaml has `branch: main`, so merging to main is required for Render autoDeploy to pick up changes
   - The PR was already merged when attempting merge — always check state first with `gh pr view`
+---
+
+## 2026-03-28 - US-009
+- What was implemented: Configured Render environment variables and triggered production deploy
+- Actions taken:
+  - Verified Render service `srv-d743cg15pdvs7380qi80` already existed (created by previous iteration)
+  - Updated service branch from `ralph/agenthunt-mvp` to `main` via PATCH API
+  - Added `NODE_VERSION=22` to env vars (was missing)
+  - Fixed DATABASE_URL: changed from direct Supabase connection (`db.{ref}.supabase.co:5432`) to Supabase pooler (`aws-0-us-west-2.pooler.supabase.com:6543`) to resolve IPv6 connectivity issue on Render
+  - Triggered deploy via Render API — status: live
+  - Verified GET /api/health returns `{"status":"ok","database":{"mode":"database","databaseConnected":true}}`
+- Files changed: prd.json (already updated by hook), progress.txt
+- **Learnings for future iterations:**
+  - Supabase direct connections (`db.{ref}.supabase.co`) resolve to IPv6 which Render free tier can't reach — use the connection pooler at `aws-0-{region}.pooler.supabase.com:6543` instead
+  - Render API: PATCH /v1/services/{id} to update branch, PUT /v1/services/{id}/env-vars to set all env vars (replaces all), POST /v1/services/{id}/deploys to trigger deploy
+  - Render service URL is `https://agenthunt-web.onrender.com` (slug-based, not just `agenthunt.onrender.com`)
+  - Use `postgres.{ref}` as the username for Supabase pooler connections (not just `postgres`)
 ---
