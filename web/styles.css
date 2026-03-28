@@ -65,7 +65,7 @@ a {
 
 .brand-lockup strong {
   font-family: var(--font-mono);
-  font-size: 0.95rem;
+  font-size: 1.4rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   color: var(--accent);
@@ -73,10 +73,21 @@ a {
 }
 
 .topbar-message {
-  color: var(--text-muted);
+  color: var(--accent);
   font-size: 0.72rem;
   font-family: var(--font-mono);
   letter-spacing: 0.04em;
+  animation: neon-flicker 3s ease-in-out infinite;
+  text-shadow: 0 0 7px rgba(0, 255, 136, 0.6), 0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.15);
+}
+
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; text-shadow: 0 0 7px rgba(0, 255, 136, 0.6), 0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.15); }
+  5% { opacity: 0.85; text-shadow: 0 0 4px rgba(0, 255, 136, 0.3); }
+  10% { opacity: 1; text-shadow: 0 0 7px rgba(0, 255, 136, 0.6), 0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.15); }
+  50% { opacity: 0.95; text-shadow: 0 0 10px rgba(0, 255, 136, 0.8), 0 0 25px rgba(0, 255, 136, 0.5), 0 0 50px rgba(0, 255, 136, 0.25); }
+  55% { opacity: 0.8; text-shadow: 0 0 4px rgba(0, 255, 136, 0.2); }
+  60% { opacity: 1; text-shadow: 0 0 7px rgba(0, 255, 136, 0.6), 0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.15); }
 }
 
 .topbar-nav {
@@ -820,6 +831,30 @@ a {
 .detail-activity-list {
   display: grid;
   gap: 8px;
+}
+
+/* ── Show more button ── */
+.show-more-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 150ms;
+}
+
+.show-more-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* ── Empty state ── */

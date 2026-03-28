@@ -3,7 +3,8 @@ let loadError = false;
 
 const state = {
   selectedId: null,
-  activeFilter: "all"
+  activeFilter: "all",
+  visibleCount: 20
 };
 
 const serviceList = document.getElementById("service-list");
@@ -41,9 +42,17 @@ function getDynamicFilters() {
   return filters;
 }
 
-function getVisibleServices() {
+function cleanServiceName(name) {
+  return (name ?? "").replace(/-like$/i, "");
+}
+
+function getFilteredServices() {
   if (state.activeFilter === "all") return services;
   return services.filter((s) => s.category === state.activeFilter);
+}
+
+function getVisibleServices() {
+  return getFilteredServices().slice(0, state.visibleCount);
 }
 
 function getSelectedService() {
@@ -96,6 +105,7 @@ function renderFilters() {
   filterRow.querySelectorAll("[data-filter]").forEach((btn) => {
     btn.addEventListener("click", () => {
       state.activeFilter = btn.dataset.filter;
+      state.visibleCount = 20;
       const visible = getVisibleServices();
       if (!visible.some((s) => s.id === state.selectedId)) {
         state.selectedId = visible[0]?.id ?? services[0]?.id ?? null;
@@ -130,8 +140,9 @@ function renderStats() {
 }
 
 function renderFeed() {
+  const filtered = getFilteredServices();
   const visible = getVisibleServices();
-  serviceCount.textContent = `${visible.length} SERVICES`;
+  serviceCount.textContent = `${filtered.length} SERVICES`;
 
   if (visible.length === 0) {
     serviceList.innerHTML = loadError
@@ -157,7 +168,7 @@ function renderFeed() {
               <div class="top-service-label">TOP SERVICE</div>
             </div>
             <div>
-              <div class="top-service-name">${topService.name ?? ""}</div>
+              <div class="top-service-name">${cleanServiceName(topService.name)}</div>
               <div class="top-service-desc">${topService.tagline ?? topService.description ?? ""}</div>
               <div class="top-service-tags">
                 ${(topService.capabilities ?? []).map((c) => `<span class="service-tag">${c}</span>`).join("")}
@@ -184,7 +195,7 @@ function renderFeed() {
       <article class="service-card ${service.id === state.selectedId ? "is-active" : ""}" data-service-id="${service.id}">
         <span class="service-rank">#${service.rank ?? ""}</span>
         <span class="service-category">${(service.category ?? "").toUpperCase().replace(/-/g, " ")}</span>
-        <span class="service-name">${service.name ?? ""}</span>
+        <span class="service-name">${cleanServiceName(service.name)}</span>
         <span class="service-desc">${service.tagline ?? service.description ?? ""}</span>
         <div class="service-right">
           <div class="vote-controls-inline">
@@ -197,7 +208,20 @@ function renderFeed() {
     `;
   });
 
+  // Show More button
+  if (visible.length < filtered.length) {
+    html += `<button class="show-more-btn" id="show-more-btn">SHOW MORE (${filtered.length - visible.length} remaining)</button>`;
+  }
+
   serviceList.innerHTML = html;
+
+  const showMoreBtn = document.getElementById("show-more-btn");
+  if (showMoreBtn) {
+    showMoreBtn.addEventListener("click", () => {
+      state.visibleCount += 20;
+      render();
+    });
+  }
 
   serviceList.querySelectorAll("[data-service-id]").forEach((card) => {
     card.addEventListener("click", (e) => {
@@ -252,7 +276,7 @@ function renderDetail() {
   }
 
   detailRank.textContent = service.rank ? `#${service.rank}` : "";
-  detailName.textContent = service.name ?? "";
+  detailName.textContent = cleanServiceName(service.name);
   detailTagline.textContent = service.tagline ?? "";
   detailUpvotes.textContent = service.upvotes ?? 0;
   detailDescription.textContent = service.description ?? "";
