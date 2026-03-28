@@ -271,3 +271,18 @@
 - **Learnings for future iterations:**
   - llms.txt uses `### ` (h3) for tool names, not `## ` (h2) — count the right heading level when verifying
 ---
+
+## 2026-03-28 - US-025
+- What was implemented: Complete web UI redesign with industrial command-center aesthetic
+- Files changed:
+  - `web/styles.css` — full rewrite: dark theme (#0C0C0C bg, #0A0A0A cards, #00FF88 accent), JetBrains Mono + Space Grotesk fonts, zero border-radius, hairline borders (#2f2f2f)
+  - `web/index.html` — restructured: hero section with "TRUST-AWARE DISCOVERY FOR AI AGENTS", stats row (4 cards), simplified leaderboard + detail panel layout, removed decorative elements (page-noise, page-glow, marquee)
+  - `web/app.js` — dynamic category filters from actual service data, featured Top Service card with green accent border and #1 rank, bracket-syntax status badges ([VERIFIED], [SELF-REPORTED], [PENDING]), live stats computation, human translation fallback template
+  - `prd.json` — marked US-025 as passes: true
+- **Learnings for future iterations:**
+  - Google Fonts import via CSS `@import url(...)` in styles.css — no need to add `<link>` in HTML
+  - Dynamic filters: extract unique categories from services array with `new Set()`, no hardcoded filter list
+  - Bracket-syntax badges ([VERIFIED], [PENDING]) give a terminal/command-center feel
+  - Services with `endpointStatus === 'Pending verification'` or missing status show [PENDING] in warning orange
+  - Human translation: if `humanNote` is missing or same as description, generate a template sentence from service name + category
+---
