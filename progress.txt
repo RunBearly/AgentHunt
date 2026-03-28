@@ -336,3 +336,13 @@
   - Option 2 (fetch detail on demand) is better than decorating all services in listServices — avoids N+1 queries on the listing endpoint
   - The detail fetch merges into the existing service object with spread, so cached detail persists across re-renders until a full page reload
 ---
+
+## 2026-03-28 - US-028
+- What was implemented: Auto-update service rank, upvotes, and review scores when reviews or invocations are recorded
+- Files changed:
+  - `src/db/repository.ts` — enhanced `submitReview()` to compute avg review score and update service payload (agentReviewScore, reviewedByAgent, testedByReviewBot, upvotes+1); enhanced `recordVerifiedInvocation()` to compute success rate, avg latency, endpoint status, and update service payload; added `recalcRanks()` method that sorts all services by composite score (agentReviewScore*10 + verifiedInvocationCount + upvotes) and updates rank field
+- **Learnings for future iterations:**
+  - Rank recalculation updates ALL services after each review/invocation — for large datasets consider batching with a single SQL UPDATE using window functions instead of individual updates
+  - Service payload is a full JSONB column — update by reading payload, modifying in JS, and writing back the full JSON (no partial jsonb_set needed since we touch multiple fields)
+  - `count(*) filter (where success = true)` is a clean Postgres pattern for conditional aggregation
+---
