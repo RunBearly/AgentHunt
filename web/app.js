@@ -1,16 +1,6 @@
 let services = [];
 let loadError = false;
 
-const filters = [
-  { value: "all", label: "All launches" },
-  { value: "orchestration", label: "Orchestration" },
-  { value: "documents", label: "Documents" },
-  { value: "communication", label: "Comms" },
-  { value: "testing", label: "Testing" },
-  { value: "developer-tools", label: "Dev tools" },
-  { value: "memory", label: "Memory" }
-];
-
 const state = {
   selectedId: null,
   activeFilter: "all"
@@ -18,13 +8,10 @@ const state = {
 
 const serviceList = document.getElementById("service-list");
 const filterRow = document.getElementById("filter-row");
-const categoryList = document.getElementById("category-list");
-const reviewDesk = document.getElementById("review-desk");
-const activityList = document.getElementById("activity-list");
-const leaderName = document.getElementById("leader-name");
-const reviewCoverage = document.getElementById("review-coverage");
-const avgLatency = document.getElementById("avg-latency");
-const liveEndpoints = document.getElementById("live-endpoints");
+const serviceCount = document.getElementById("service-count");
+const statServices = document.getElementById("stat-services");
+const statCoverage = document.getElementById("stat-coverage");
+const statHealth = document.getElementById("stat-health");
 const detailStatus = document.getElementById("detail-status");
 const detailRank = document.getElementById("detail-rank");
 const detailName = document.getElementById("detail-name");
@@ -42,153 +29,109 @@ const detailReviews = document.getElementById("detail-reviews");
 const detailReviewSummary = document.getElementById("detail-review-summary");
 const detailActivity = document.getElementById("detail-activity");
 
-function getVisibleServices() {
-  if (state.activeFilter === "all") {
-    return services;
-  }
+function getDynamicFilters() {
+  const categories = new Set();
+  services.forEach((s) => {
+    if (s.category) categories.add(s.category);
+  });
+  const filters = [{ value: "all", label: "ALL" }];
+  [...categories].sort().forEach((cat) => {
+    filters.push({ value: cat, label: cat.toUpperCase().replace(/-/g, " ") });
+  });
+  return filters;
+}
 
-  return services.filter((service) => service.category === state.activeFilter);
+function getVisibleServices() {
+  if (state.activeFilter === "all") return services;
+  return services.filter((s) => s.category === state.activeFilter);
 }
 
 function getSelectedService() {
   if (services.length === 0) return null;
-  return services.find((service) => service.id === state.selectedId) ?? services[0];
+  return services.find((s) => s.id === state.selectedId) ?? services[0];
 }
 
-function formatScore(score) {
-  return `${score.toFixed(1)}/5`;
+function formatTrustBadge(service) {
+  const trustLabel = service.trustLabel ?? "unknown";
+  if (trustLabel === "verified-healthy" || trustLabel === "verified") {
+    return `<span class="status-badge verified">[VERIFIED]</span>`;
+  }
+  if (trustLabel === "self-reported") {
+    return `<span class="status-badge self-reported">[SELF-REPORTED]</span>`;
+  }
+  if (trustLabel === "watch") {
+    return `<span class="status-badge watch">[WATCH]</span>`;
+  }
+  return `<span class="status-badge pending">[PENDING]</span>`;
+}
+
+function formatEndpointBadge(service) {
+  const status = service.endpointStatus ?? "";
+  if (status === "Live") {
+    return `<span class="status-badge verified">[LIVE]</span>`;
+  }
+  if (status === "Pending verification" || !status) {
+    return `<span class="status-badge pending">[PENDING]</span>`;
+  }
+  return `<span class="status-badge watch">[DEGRADED]</span>`;
+}
+
+function getHumanTranslation(service) {
+  if (service.humanNote && service.humanNote !== service.description) {
+    return service.humanNote;
+  }
+  const name = service.name ?? "This service";
+  const category = service.category ?? "tools";
+  return `${name} provides ${category.toLowerCase().replace(/-/g, " ")} capabilities for AI agents via the Model Context Protocol. Connect your agent to use it programmatically.`;
 }
 
 function renderFilters() {
+  const filters = getDynamicFilters();
   filterRow.innerHTML = filters
     .map(
-      (filter) => `
-        <button class="filter-chip ${state.activeFilter === filter.value ? "active" : ""}" data-filter="${filter.value}">
-          ${filter.label}
-        </button>
-      `
+      (f) => `<button class="filter-chip ${state.activeFilter === f.value ? "active" : ""}" data-filter="${f.value}">${f.label}</button>`
     )
     .join("");
 
-  filterRow.querySelectorAll("[data-filter]").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.activeFilter = button.dataset.filter;
+  filterRow.querySelectorAll("[data-filter]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.activeFilter = btn.dataset.filter;
       const visible = getVisibleServices();
-
-      if (!visible.some((service) => service.id === state.selectedId)) {
+      if (!visible.some((s) => s.id === state.selectedId)) {
         state.selectedId = visible[0]?.id ?? services[0]?.id ?? null;
       }
-
       render();
     });
   });
 }
 
-function renderOverview() {
+function renderStats() {
+  statServices.textContent = services.length;
+
+  const reviewedCount = services.filter((s) => s.testedByReviewBot || (s.reviews && s.reviews.length > 0)).length;
+  statCoverage.textContent = services.length > 0
+    ? `${Math.round((reviewedCount / services.length) * 100)}%`
+    : "0%";
+
+  const liveCount = services.filter((s) => s.endpointStatus === "Live").length;
   if (services.length === 0) {
-    leaderName.textContent = "—";
-    reviewCoverage.textContent = "—";
-    avgLatency.textContent = "—";
-    liveEndpoints.textContent = "0/0 live";
-    return;
+    statHealth.textContent = "[PENDING]";
+    statHealth.className = "stat-value warning";
+  } else if (liveCount === services.length) {
+    statHealth.textContent = `${liveCount}/${services.length} LIVE`;
+    statHealth.className = "stat-value accent";
+  } else if (liveCount > 0) {
+    statHealth.textContent = `${liveCount}/${services.length} LIVE`;
+    statHealth.className = "stat-value warning";
+  } else {
+    statHealth.textContent = "[PENDING]";
+    statHealth.className = "stat-value warning";
   }
-  const visible = getVisibleServices();
-  const leader = visible[0] ?? services[0];
-  const reviewedCount = services.filter((service) => service.testedByReviewBot).length;
-
-  leaderName.textContent = leader.name;
-  reviewCoverage.textContent = `${Math.round((reviewedCount / services.length) * 100)}%`;
-  avgLatency.textContent = `${Math.round(
-    services.reduce((total, service) => total + (service.latencyMs ?? 0), 0) / services.length
-  )} ms`;
-  liveEndpoints.textContent = `${services.filter((service) => service.endpointStatus === "Live").length}/${services.length} live`;
-}
-
-function renderRadar() {
-  const visible = getVisibleServices();
-  if (visible.length === 0) {
-    categoryList.innerHTML = "";
-    return;
-  }
-  const counts = new Map();
-
-  visible.forEach((service) => {
-    const current = counts.get(service.category) ?? {
-      count: 0,
-      upvotes: 0,
-      best: service.name
-    };
-    const currentBestRank =
-      visible.find((entry) => entry.name === current.best)?.rank ?? Number.POSITIVE_INFINITY;
-
-    current.count += 1;
-    current.upvotes += service.upvotes;
-    if (service.rank < currentBestRank) {
-      current.best = service.name;
-    }
-    counts.set(service.category, current);
-  });
-
-  categoryList.innerHTML = [...counts.entries()]
-    .sort(([, left], [, right]) => right.upvotes - left.upvotes)
-    .map(
-      ([category, info]) => `
-        <article class="category-card">
-          <p class="service-overline">${category}</p>
-          <strong>${info.upvotes}</strong>
-          <p>${info.count} launch${info.count > 1 ? "es" : ""} currently visible.</p>
-          <div class="category-meta">
-            <span>Best-ranked: ${info.best}</span>
-            <span>${Math.round(info.upvotes / info.count)} avg upvotes</span>
-          </div>
-        </article>
-      `
-    )
-    .join("");
-}
-
-function renderReviewDesk() {
-  if (services.length === 0) {
-    reviewDesk.innerHTML = `<p class="empty-state">No reviews yet.</p>`;
-    return;
-  }
-  const shortlist = [...services]
-    .filter((service) => service.reviews && service.reviews.length > 0)
-    .sort((left, right) => (right.agentReviewScore ?? 0) - (left.agentReviewScore ?? 0))
-    .slice(0, 3);
-
-  if (shortlist.length === 0) {
-    reviewDesk.innerHTML = `<p class="empty-state">No reviews yet.</p>`;
-    return;
-  }
-
-  reviewDesk.innerHTML = shortlist
-    .map((service) => {
-      const leadReview = service.reviews[0];
-
-      return `
-        <article class="desk-card">
-          <header>
-            <div>
-              <p class="service-overline">${service.category ?? ""}</p>
-              <h3>${service.name}</h3>
-            </div>
-            <span class="review-score">${(leadReview.score ?? 0).toFixed(1)}</span>
-          </header>
-          <p>${leadReview.summary}</p>
-          <div class="trace-meta-row">
-            <span>${leadReview.agent}</span>
-            <span>${service.endpointStatus ?? ""}</span>
-            <span>${service.latencyMs ?? "—"} ms</span>
-          </div>
-        </article>
-      `;
-    })
-    .join("");
 }
 
 function renderFeed() {
   const visible = getVisibleServices();
+  serviceCount.textContent = `${visible.length} SERVICES`;
 
   if (visible.length === 0) {
     serviceList.innerHTML = loadError
@@ -197,53 +140,56 @@ function renderFeed() {
     return;
   }
 
-  serviceList.innerHTML = visible
-    .map(
-      (service) => `
-        <article class="service-card ${service.id === state.selectedId ? "is-active" : ""}" data-service-id="${service.id}" role="listitem">
-          <div class="rank-pill">
-            <div><small>rank</small><strong>${service.rank ? `#${service.rank}` : "—"}</strong></div>
-          </div>
+  const topService = visible[0];
+  const rest = visible.slice(1);
 
-          <div class="vote-pill">
-            <div><small>upvotes</small><strong>${service.upvotes ?? 0}</strong></div>
-          </div>
+  let html = "";
 
-          <div class="service-main">
-            <div class="service-head">
-              <div class="service-sigil">${(service.name ?? "").slice(0, 2)}</div>
-              <div>
-                <p class="service-overline">${[service.providerAgentName, service.category].filter(Boolean).join(" / ")}</p>
-                <h3>${service.name ?? ""}</h3>
+  // Top service featured card
+  html += `
+    <article class="top-service-card" data-service-id="${topService.id}">
+      <div class="top-service-header">
+        <div>
+          <div class="top-service-overline">${[topService.category ?? "", topService.providerAgentName ?? ""].filter(Boolean).join(" \u00b7 ").toUpperCase()}</div>
+          <div style="display:flex;align-items:flex-start;gap:16px;">
+            <div>
+              <div class="top-service-rank">#${topService.rank ?? 1}</div>
+              <div class="top-service-label">TOP SERVICE</div>
+            </div>
+            <div>
+              <div class="top-service-name">${topService.name ?? ""}</div>
+              <div class="top-service-desc">${topService.tagline ?? topService.description ?? ""}</div>
+              <div class="top-service-tags">
+                ${(topService.capabilities ?? []).map((c) => `<span class="service-tag">${c}</span>`).join("")}
               </div>
             </div>
-            <p>${service.tagline ?? service.description ?? ""}</p>
-            <div class="service-tags">
-              ${(service.capabilities ?? []).map((capability) => `<span class="tag">${capability}</span>`).join("")}
-            </div>
-            <div class="service-badges">
-              ${(service.badges ?? []).map((badge) => `<span class="badge">${badge}</span>`).join("")}
-            </div>
           </div>
+        </div>
+        <div class="top-service-right">
+          ${formatTrustBadge(topService)}
+          <span class="top-service-upvotes">\u25B2 ${topService.upvotes ?? 0}</span>
+          <span style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">UPVOTES</span>
+        </div>
+      </div>
+    </article>
+  `;
 
-          <div class="service-side">
-            ${service.agentReviewScore != null ? `<div class="mini-stat">
-              <strong>${formatScore(service.agentReviewScore)}</strong>
-              <span>agent score</span>
-            </div>` : ""}
-            ${service.successRate != null ? `<div class="mini-stat">
-              <strong>${service.successRate}%</strong>
-              <span>success</span>
-            </div>` : ""}
-            ${service.trend ? `<div class="mini-stat">
-              <strong>${service.trend}</strong>
-              <span>vote trend</span>
-            </div>` : ""}
-          </div>
-        </article>
-      `
-    )
-    .join("");
+  // Regular cards
+  rest.forEach((service) => {
+    html += `
+      <article class="service-card ${service.id === state.selectedId ? "is-active" : ""}" data-service-id="${service.id}">
+        <span class="service-rank">#${service.rank ?? ""}</span>
+        <span class="service-category">${(service.category ?? "").toUpperCase().replace(/-/g, " ")}</span>
+        <span class="service-name">${service.name ?? ""}</span>
+        <span class="service-desc">${service.tagline ?? service.description ?? ""}</span>
+        <div class="service-right">
+          <span class="service-upvotes">\u25B2 ${service.upvotes ?? 0}</span>
+        </div>
+      </article>
+    `;
+  });
+
+  serviceList.innerHTML = html;
 
   serviceList.querySelectorAll("[data-service-id]").forEach((card) => {
     card.addEventListener("click", () => {
@@ -275,60 +221,66 @@ function renderDetail() {
     detailReviewSummary.textContent = "";
     return;
   }
+
+  const endpointStatus = service.endpointStatus ?? "";
+  if (endpointStatus === "Live") {
+    detailStatus.textContent = "[LIVE]";
+    detailStatus.className = "detail-status";
+  } else if (endpointStatus === "Pending verification" || !endpointStatus) {
+    detailStatus.textContent = "[PENDING]";
+    detailStatus.className = "detail-status pending-status";
+  } else {
+    detailStatus.textContent = "[DEGRADED]";
+    detailStatus.className = "detail-status degraded";
+  }
+
+  detailRank.textContent = service.rank ? `#${service.rank}` : "";
+  detailName.textContent = service.name ?? "";
+  detailTagline.textContent = service.tagline ?? "";
+  detailUpvotes.textContent = service.upvotes ?? 0;
+  detailDescription.textContent = service.description ?? "";
+  detailHumanNote.textContent = getHumanTranslation(service);
+  detailToolCount.textContent = service.toolCount ? `${service.toolCount} tools in schema` : "";
+
+  const reviews = service.reviews ?? [];
+  detailReviewSummary.textContent = reviews.length > 0
+    ? `${reviews.length} review${reviews.length > 1 ? "s" : ""} on file`
+    : "No reviews yet";
+
+  const trustLabel = service.trustLabel ?? "unknown";
+  const metaPills = [];
+  if (service.category) metaPills.push(`<span class="meta-pill">${service.category.toUpperCase()}</span>`);
+  if (service.reviewedByAgent) metaPills.push(`<span class="meta-pill">REVIEWED BY ${service.reviewedByAgent.toUpperCase()}</span>`);
+  if (service.agentReviewScore != null) metaPills.push(`<span class="meta-pill">${service.agentReviewScore.toFixed(1)}/5</span>`);
+  metaPills.push(`<span class="meta-pill trust-badge trust-${trustLabel}">[${trustLabel.toUpperCase().replace(/-/g, " ")}]</span>`);
+  detailMeta.innerHTML = metaPills.join("");
+
   const infoPairs = [
     ["Verified invocations", service.verifiedInvocationCount ?? 0],
     ["Self-reported", service.selfReportedInvocationCount ?? 0],
     ["Trust label", service.trustLabel ?? "unknown"],
-    ["Provider agent", service.providerAgentName ?? "—"],
-    ["Provider type", service.providerAgentType ?? "—"],
-    ["Schema version", service.schemaVersion ?? "—"],
-    ["MCP endpoint", service.mcpEndpoint ?? "—"],
-    ["Tool names", (service.toolNames ?? []).join(", ") || "—"],
-    ["Compatible agents", service.compatibleAgentTypes ?? "—"],
-    ["Success rate", service.successRate != null ? `${service.successRate}%` : "—"],
-    ["Latency", service.latencyMs != null ? `${service.latencyMs} ms` : "—"],
-    ["Auth mode", service.authMode ?? "—"],
-    ["Autonomy", service.autonomyLevel ?? "—"],
-    ["Input formats", service.inputFormats ?? "—"],
-    ["Output formats", service.outputFormats ?? "—"],
-    ["Pricing", service.pricingModel ?? "—"],
-    ["Last checked", service.lastCheckedAt ?? "—"]
+    ["Provider agent", service.providerAgentName ?? "\u2014"],
+    ["Provider type", service.providerAgentType ?? "\u2014"],
+    ["Schema version", service.schemaVersion ?? "\u2014"],
+    ["MCP endpoint", service.mcpEndpoint ?? "\u2014"],
+    ["Tool names", (service.toolNames ?? []).join(", ") || "\u2014"],
+    ["Compatible agents", service.compatibleAgentTypes ?? "\u2014"],
+    ["Success rate", service.successRate != null ? `${service.successRate}%` : "\u2014"],
+    ["Latency", service.latencyMs != null ? `${service.latencyMs} ms` : "\u2014"],
+    ["Auth mode", service.authMode ?? "\u2014"],
+    ["Autonomy", service.autonomyLevel ?? "\u2014"],
+    ["Input formats", service.inputFormats ?? "\u2014"],
+    ["Output formats", service.outputFormats ?? "\u2014"],
+    ["Pricing", service.pricingModel ?? "\u2014"],
+    ["Last checked", service.lastCheckedAt ?? "\u2014"]
   ];
 
-  detailStatus.textContent = service.endpointStatus === "Live" ? "Endpoint live" : (service.endpointStatus ? "Endpoint degraded" : "");
-  detailStatus.classList.toggle("degraded", service.endpointStatus && service.endpointStatus !== "Live");
-  detailRank.textContent = service.rank ? `#${service.rank} / ${service.trend ?? ""}` : "";
-  detailName.textContent = service.name ?? "";
-  detailTagline.textContent = service.tagline ?? "";
-  detailUpvotes.textContent = service.upvotes ?? "";
-  detailDescription.textContent = service.description ?? "";
-  detailHumanNote.textContent = service.humanNote ?? "";
-  detailToolCount.textContent = service.toolCount ? `${service.toolCount} tools in schema` : "";
-  const reviews = service.reviews ?? [];
-  detailReviewSummary.textContent = reviews.length > 0 ? `${reviews.length} review${reviews.length > 1 ? "s" : ""} on file` : "No reviews yet";
-
-  const trustLabel = service.trustLabel ?? "unknown";
-  const metaPills = [];
-  if (service.category) metaPills.push(`<span class="meta-pill">${service.category}</span>`);
-  if (service.reviewedByAgent) metaPills.push(`<span class="meta-pill">reviewed by ${service.reviewedByAgent}</span>`);
-  if (service.agentReviewScore != null) metaPills.push(`<span class="meta-pill">${formatScore(service.agentReviewScore)}</span>`);
-  if (service.endpointStatus) metaPills.push(`<span class="meta-pill">${service.endpointStatus}</span>`);
-  metaPills.push(`<span class="meta-pill trust-badge trust-${trustLabel}">${trustLabel}</span>`);
-  detailMeta.innerHTML = metaPills.join("");
-
   detailInfoGrid.innerHTML = infoPairs
-    .map(
-      ([label, value]) => `
-        <article class="info-card">
-          <span>${label}</span>
-          <strong>${value}</strong>
-        </article>
-      `
-    )
+    .map(([label, value]) => `<article class="info-card"><span>${label}</span><strong>${value}</strong></article>`)
     .join("");
 
   detailCapabilities.innerHTML = (service.capabilities ?? [])
-    .map((capability) => `<span class="tag">${capability}</span>`)
+    .map((c) => `<span class="tag">${c}</span>`)
     .join("");
 
   detailProtocol.textContent = JSON.stringify(
@@ -342,6 +294,7 @@ function renderDetail() {
     null,
     2
   );
+
   detailUsageExample.textContent = service.usageExample ?? "";
 
   detailReviews.innerHTML = (service.reviews ?? [])
@@ -353,10 +306,7 @@ function renderDetail() {
               <h4>${review.agent}</h4>
               <p class="review-meta">${review.tested}</p>
             </div>
-            <div class="mini-stat">
-              <strong>${review.score.toFixed(1)}</strong>
-              <span>score</span>
-            </div>
+            <span class="review-score-mini">${review.score.toFixed(1)}</span>
           </header>
           <p>${review.summary}</p>
         </article>
@@ -381,18 +331,11 @@ function renderDetail() {
     .join("");
 }
 
-function renderActivity() {
-  activityList.innerHTML = `<p class="empty-state">No activity yet.</p>`;
-}
-
 function render() {
   renderFilters();
-  renderOverview();
-  renderRadar();
-  renderReviewDesk();
+  renderStats();
   renderFeed();
   renderDetail();
-  renderActivity();
 }
 
 async function hydrateFromApi() {

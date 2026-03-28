@@ -190,25 +190,99 @@
       "notes": "DONE. Render service srv-d743cg15pdvs7380qi80 exists with all env vars set. AutoDeploy on, build in progress. Actual URL: https://agenthunt-web.onrender.com (not agenthunt.onrender.com)."
     },
     {
-      "id": "US-013",
-      "title": "Verify production endpoints and update README with final URL",
-      "description": "As a developer, I need to confirm the production deployment works and update README if the actual Render URL differs from the placeholder.",
+      "id": "US-025",
+      "title": "Redesign web UI with industrial command-center aesthetic and Top Service highlight",
+      "description": "As a user, I want the web UI to feel like a developer command center with a featured 'Top Service' card, cleaner dark theme, and terminal-inspired typography.",
       "acceptanceCriteria": [
-        "Production /api/health returns status ok with database connected",
-        "Production /api/services returns seeded services",
-        "Production /mcp responds to a JSON-RPC list_services call",
-        "Production /llms.txt is accessible",
-        "Production / serves the web UI",
-        "README.md production URL matches the actual deployed URL",
-        "Typecheck passes"
+        "Dark background uses near-black (#0C0C0C page, #080808 topbar, #0A0A0A cards)",
+        "Topbar shows AGENTHUNT in neon green (#00FF88) monospace with '// THIS PAGE WAS MADE FOR HUMANS' tagline",
+        "Hero section shows 'TRUST-AWARE DISCOVERY FOR AI AGENTS' in large Space Grotesk font",
+        "Stats row shows 4 cards: live services count, review coverage, endpoint health status, MCP endpoint",
+        "Top ranked service gets a featured 'Top Service' card with green accent border, large #1 rank, expanded details and tags",
+        "Regular service cards show rank number, category, name, description, and upvote count in a compact horizontal layout",
+        "Category filter chips are dynamically generated from actual service categories",
+        "Filter chips use green fill+border for active state, gray border for inactive",
+        "All text uses JetBrains Mono (monospace) for labels/body and Space Grotesk for headings/numbers",
+        "Labels and navigation use UPPERCASE with letter-spacing",
+        "Status badges use bracket syntax like [SELF-REPORTED], [VERIFIED], [PENDING]",
+        "Zero border-radius on all elements (sharp corners throughout)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill",
+        "Category filter chips are dynamically generated from actual service categories (not hardcoded)",
+        "Services with endpointStatus 'Pending verification' show [PENDING] badge in orange, not 'Endpoint degraded'",
+        "Human translation section shows distinct text from description (use a template if OpenAI unavailable)",
+        "Summary stats cards compute from live data: service count, review %, avg latency or N/A, endpoint health count"
       ],
       "priority": 13,
       "passes": true,
-      "notes": "Verified 2026-03-28: all endpoints returning real data, README URL correct."
+      "notes": "Reference design: design/agenthunt-redesign.png in the project root. Style guide: Industrial Technical Dashboard — dark mode, neon green (#00FF88) accent, JetBrains Mono + Space Grotesk fonts, sharp corners, hairline borders (#2f2f2f). Key colors: page bg #0C0C0C, card bg #0A0A0A, text primary #FFFFFF, text secondary #8a8a8a, text muted #6a6a6a, accent #00FF88, warning #FF8800, border #2f2f2f. Update web/styles.css and web/app.js. The top service (rank 1 or first in list) should get the featured treatment with green border and expanded layout. Google Fonts imports needed: JetBrains Mono and Space Grotesk."
+    },
+    {
+      "id": "US-024",
+      "title": "Fix mobile layout — service cards overflow and detail panel is hidden",
+      "description": "As a mobile user, service cards are too wide and the detail panel is not accessible.",
+      "acceptanceCriteria": [
+        "On mobile viewport (375px), service cards fit within screen width without horizontal overflow",
+        "Detail panel is accessible below the service list on mobile (not hidden off-screen)",
+        "Filter chips wrap properly on small screens",
+        "Summary cards stack vertically on mobile",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 14,
+      "passes": false,
+      "notes": "The responsive screenshot at 375px shows cards with horizontal overflow and detail panel not visible. Fix in web/styles.css — adjust grid layout, card widths, and detail panel positioning for small screens."
+    },
+    {
+      "id": "US-015",
+      "title": "Merge all changes to main, push, and trigger Render deploy",
+      "description": "As a developer, I need the ralph/agenthunt-mvp branch merged to main and pushed to origin so Render picks up the seed-removal and real-data changes.",
+      "acceptanceCriteria": [
+        "All code changes from previous stories are committed",
+        "ralph/agenthunt-mvp branch is merged into main",
+        "main is pushed to origin (git push origin main)",
+        "Render autoDeploy triggers from main branch",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 15,
+      "passes": false,
+      "notes": "git checkout main && git merge ralph/agenthunt-mvp && git push origin main. Render service srv-d743cg15pdvs7380qi80 has autoDeploy on branch main."
+    },
+    {
+      "id": "US-016",
+      "title": "Verify Render deploy succeeded with new design",
+      "description": "As a user, I need to confirm that the production web UI no longer shows MeshRouter, PDF Ghost, or any other mock data.",
+      "acceptanceCriteria": [
+        "Render deploy status is live (check via Render API)",
+        "curl https://agenthunt-web.onrender.com/ returns the redesigned UI (not old design)",
+        "curl https://agenthunt-web.onrender.com/api/services returns real services only",
+        "No console errors on the production site",
+        "Typecheck passes"
+      ],
+      "priority": 16,
+      "passes": false,
+      "notes": "Check deploy: source .env && curl -s -H \"Authorization: Bearer $RENDER_API_KEY\" \"https://api.render.com/v1/services/srv-d743cg15pdvs7380qi80/deploys?limit=1\". Then curl production endpoints."
+    },
+    {
+      "id": "US-017",
+      "title": "Final production smoke test — all endpoints and UI",
+      "description": "As a developer, I need to verify every production endpoint returns correct real data before announcing.",
+      "acceptanceCriteria": [
+        "GET /api/health returns status ok with databaseConnected true",
+        "GET /api/services returns real services (GitHub MCP, PostgreSQL MCP, Brave Search)",
+        "POST /mcp with JSON-RPC list_services returns valid response",
+        "GET /llms.txt lists all 8 MCP tools",
+        "Web UI at / renders redesigned command-center layout with Top Service highlight",
+        "Typecheck passes"
+      ],
+      "priority": 17,
+      "passes": false,
+      "notes": "Verified 2026-03-28: all 7 endpoints confirmed with real data. Deploy dep-d744905ipkoc738e1650 live."
     },
     {
       "id": "US-014",
-      "title": "Prepare and post Discord launch announcement",
+      "title": "Post Discord launch announcement via agent-browser",
       "description": "As a project maintainer, I need a Discord launch announcement drafted and posted to the designated channel.",
       "acceptanceCriteria": [
         "Use agent-browser CLI (AGENT_BROWSER_SESSION_NAME=agenthunt) to open Discord in browser",
@@ -219,56 +293,9 @@
         "Take a screenshot via agent-browser snapshot to confirm the message was posted",
         "Typecheck passes"
       ],
-      "priority": 14,
-      "passes": true,
+      "priority": 18,
+      "passes": false,
       "notes": "MUST use agent-browser CLI for Discord posting — do NOT skip this. Full procedure in .omx/plans/browser-session-runbook.md. Commands: (1) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=username --reveal (2) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --fields label=password --reveal (3) op item get vs5kl724kiho3nfuj4xdm5gtwi --vault Employee --otp (4) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser open https://discord.com/channels/@me (5) Login with credentials, MFA with OTP (6) Navigate to live-and-updates channel (7) Type and send message (8) AGENT_BROWSER_SESSION_NAME=agenthunt agent-browser snapshot -c -d 8 to confirm."
-    },
-    {
-      "id": "US-015",
-      "title": "Merge ralph branch to main and push",
-      "description": "As a developer, I need the ralph/agenthunt-mvp branch merged to main and pushed to origin so Render picks up the seed-removal and real-data changes.",
-      "acceptanceCriteria": [
-        "ralph/agenthunt-mvp is merged into main (merge or rebase)",
-        "main is pushed to origin",
-        "All commits from US-009 through US-014 are on origin/main",
-        "Typecheck passes",
-        "Tests pass"
-      ],
-      "priority": 15,
-      "passes": true,
-      "notes": "git checkout main && git merge ralph/agenthunt-mvp && git push origin main. Render has autoDeploy on branch main."
-    },
-    {
-      "id": "US-016",
-      "title": "Wait for Render deploy and verify seed data is gone from production web UI",
-      "description": "As a user, I need to confirm that the production web UI no longer shows MeshRouter, PDF Ghost, or any other mock data.",
-      "acceptanceCriteria": [
-        "curl https://agenthunt-web.onrender.com/app.js does NOT contain MeshRouter or fallbackServices with mock entries",
-        "https://agenthunt-web.onrender.com/api/services returns only real services (GitHub MCP, PostgreSQL MCP, Brave Search MCP)",
-        "The web UI at https://agenthunt-web.onrender.com/ renders the real services, not mock data",
-        "Typecheck passes"
-      ],
-      "priority": 16,
-      "passes": true,
-      "notes": "Verified 2026-03-28: deploy dep-d744905ipkoc738e1650 is live. app.js has 0 MeshRouter/fallbackServices references. API returns real DB services only."
-    },
-    {
-      "id": "US-017",
-      "title": "Final production verification — all endpoints with real data",
-      "description": "As a developer, I need to verify every production endpoint returns correct real data before announcing.",
-      "acceptanceCriteria": [
-        "GET /api/health returns status ok with databaseConnected true",
-        "GET /api/services returns 3+ real services, zero mock services",
-        "GET /api/services/github-mcp-server returns the GitHub MCP service detail",
-        "GET /api/services/github-mcp-server/trust returns trust signals with trustLabel",
-        "POST /mcp with JSON-RPC list_services returns real services",
-        "GET /llms.txt is accessible and lists all 8 MCP tools",
-        "GET / serves web UI that renders real services",
-        "Typecheck passes"
-      ],
-      "priority": 17,
-      "passes": true,
-      "notes": "Verified 2026-03-28: all 7 endpoints confirmed with real data. Deploy dep-d744905ipkoc738e1650 live."
     }
   ]
 }
