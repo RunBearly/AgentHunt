@@ -8,7 +8,7 @@ import { createAgentHuntMcpServer } from '../mcp/server.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '../..');
-const webRoot = path.join(projectRoot, 'web');
+const webRoot = path.join(projectRoot, 'public');
 
 export function createApp(catalog = new ServiceCatalog()) {
   const app = express();

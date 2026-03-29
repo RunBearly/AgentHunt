@@ -1,0 +1,19 @@
+{
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/mcp", "destination": "/api" },
+    { "source": "/llms.txt", "destination": "/api" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,DELETE,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type,x-admin-write-token" }
+      ]
+    }
+  ]
+}
